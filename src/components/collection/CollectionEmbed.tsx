@@ -59,7 +59,21 @@ export default function CollectionEmbed({ collectionId }: CollectionEmbedProps) 
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={copyToClipboard}
-          className="btn-apple-primary text-sm px-4 py-2"
+          className="inline-flex items-center justify-center px-4 py-2 rounded-xl font-medium transition-all duration-200 text-white text-sm"
+          style={{
+            background: 'linear-gradient(135deg, #007aff 0%, #ff9500 100%)',
+            boxShadow: '0 2px 8px rgba(0, 122, 255, 0.3), 0 0 15px rgba(255, 149, 0, 0.1)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #0056cc 0%, #e6850e 100%)';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 122, 255, 0.3), 0 0 20px rgba(255, 149, 0, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #007aff 0%, #ff9500 100%)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 122, 255, 0.3), 0 0 15px rgba(255, 149, 0, 0.1)';
+          }}
         >
           {copied ? (
             <span className="flex items-center">
