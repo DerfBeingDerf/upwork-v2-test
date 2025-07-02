@@ -36,11 +36,11 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <div className="w-full">
+      <div className="w-full relative">
         {/* Main Navigation */}
-        <div className="h-20 flex items-center">
+        <div className="h-20 flex items-center relative">
           {/* Logo - positioned absolutely to stay on the left */}
-          <div className="absolute left-4 sm:left-6 lg:left-8">
+          <div className="absolute left-4 sm:left-6 lg:left-8 z-10">
             <Link to="/" className="flex items-center group">
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -56,12 +56,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Center Navigation - aligned with main content container */}
-          <div className="w-full max-w-none px-8 sm:px-12 lg:px-16 flex items-center justify-between">
-            {/* Spacer for logo */}
-            <div className="w-20"></div>
-            
-            {/* Center Navigation */}
+          {/* Center Navigation - positioned absolutely relative to page width */}
+          <div className="absolute left-1/2 transform -translate-x-1/2">
             <nav className="hidden md:flex items-center space-x-8">
               <Link 
                 to="/" 
@@ -96,8 +92,10 @@ export default function Navbar() {
                 Upload
               </Link>
             </nav>
+          </div>
 
-            {/* Right Side */}
+          {/* Right Side - positioned absolutely */}
+          <div className="absolute right-4 sm:right-6 lg:right-8">
             <div className="flex items-center space-x-4">
               {user ? (
                 <div className="flex items-center space-x-4">
