@@ -157,7 +157,7 @@ export default function PricingPage() {
                     {/* Background gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-50`} />
                     
-                    <div className="relative p-8">
+                    <div className="relative p-8 flex flex-col h-full">
                       {/* Plan Header */}
                       <div className="text-center mb-8">
                         <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-white/5 mb-4 border border-white/10">
@@ -180,8 +180,8 @@ export default function PricingPage() {
                         )}
                       </div>
 
-                      {/* Features */}
-                      <div className="space-y-4 mb-8">
+                      {/* Features - flex-grow to push button to bottom */}
+                      <div className="space-y-4 mb-8 flex-grow">
                         {plan.features.map((feature, featureIndex) => (
                           <div key={featureIndex} className="flex items-center">
                             <Check size={16} className="text-green-500 mr-3 flex-shrink-0" />
@@ -190,20 +190,22 @@ export default function PricingPage() {
                         ))}
                       </div>
 
-                      {/* CTA Button */}
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleGetStarted(plan.name)}
-                        className={`w-full py-4 rounded-full font-medium transition-all duration-200 text-lg ${
-                          plan.popular
-                            ? 'btn-apple-primary'
-                            : 'btn-apple-secondary'
-                        }`}
-                      >
-                        {plan.cta}
-                        <ArrowRight className="ml-2 h-5 w-5 inline" />
-                      </motion.button>
+                      {/* CTA Button - positioned at bottom */}
+                      <div className="mt-auto">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => handleGetStarted(plan.name)}
+                          className={`w-full py-4 rounded-full font-medium transition-all duration-200 text-lg ${
+                            plan.popular
+                              ? 'btn-apple-primary'
+                              : 'btn-apple-secondary'
+                          }`}
+                        >
+                          {plan.cta}
+                          <ArrowRight className="ml-2 h-5 w-5 inline" />
+                        </motion.button>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -343,7 +345,7 @@ export default function PricingPage() {
                 Sign In
               </motion.button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>
