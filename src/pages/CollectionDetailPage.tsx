@@ -389,7 +389,7 @@ export default function CollectionDetailPage() {
       ) : (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-2">
-            <div className="card-apple overflow-hidden">
+            <div className="card-apple-subtle overflow-hidden">
               <div className="p-6 bg-white/5 border-b border-white/10">
                 <h2 className="text-xl font-semibold text-white text-apple-title">Tracks</h2>
               </div>
@@ -616,7 +616,7 @@ export default function CollectionDetailPage() {
       {/* Collection Settings Section */}
       {isOwner && (
         <div className="mt-16 pt-8 border-t border-white/10">
-          <div className="card-apple p-8">
+          <div className="card-apple-subtle p-8">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-8">
               <div className="flex-1">
                 <div className="flex items-center mb-4">
