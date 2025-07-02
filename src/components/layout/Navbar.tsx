@@ -38,7 +38,7 @@ export default function Navbar() {
     >
       <div className="w-full">
         {/* Main Navigation */}
-        <div className="h-20 flex items-center relative">
+        <div className="h-20 flex items-center">
           {/* Logo - positioned absolutely to stay on the left */}
           <div className="absolute left-4 sm:left-6 lg:left-8">
             <Link to="/" className="flex items-center group">
@@ -56,79 +56,77 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Center Navigation - positioned to align with main content */}
-          <div className="w-full flex justify-center">
-            <div className="max-w-4xl w-full flex items-center justify-between px-8 sm:px-12 lg:px-16">
-              {/* Spacer for logo */}
-              <div className="w-20"></div>
+          {/* Center Navigation - aligned with main content container */}
+          <div className="w-full max-w-none px-8 sm:px-12 lg:px-16 flex items-center justify-between">
+            {/* Spacer for logo */}
+            <div className="w-20"></div>
+            
+            {/* Center Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link 
+                to="/" 
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive('/') 
+                    ? 'text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Home
+              </Link>
               
-              {/* Center Navigation */}
-              <nav className="hidden md:flex items-center space-x-8">
-                <Link 
-                  to="/" 
-                  className={`text-sm font-medium transition-colors duration-200 ${
-                    isActive('/') 
-                      ? 'text-white' 
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Home
-                </Link>
-                
-                <Link 
-                  to="/library" 
-                  className={`text-sm font-medium transition-colors duration-200 ${
-                    isActive('/library') 
-                      ? 'text-white' 
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Library
-                </Link>
-                
-                <Link 
-                  to="/upload" 
-                  className={`text-sm font-medium transition-colors duration-200 ${
-                    isActive('/upload') 
-                      ? 'text-white' 
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Upload
-                </Link>
-              </nav>
+              <Link 
+                to="/library" 
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive('/library') 
+                    ? 'text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Library
+              </Link>
+              
+              <Link 
+                to="/upload" 
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive('/upload') 
+                    ? 'text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Upload
+              </Link>
+            </nav>
 
-              {/* Right Side */}
-              <div className="flex items-center space-x-4">
-                {user ? (
-                  <div className="flex items-center space-x-4">
-                    <span className="hidden sm:inline text-sm text-gray-400">
-                      {user.email?.split('@')[0]}
-                    </span>
-                    <button 
-                      onClick={handleSignOut}
-                      className="text-gray-400 hover:text-white transition-colors duration-200"
-                    >
-                      <LogOut size={18} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-6">
-                    <Link 
-                      to="/login" 
-                      className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
-                    >
-                      Sign In
-                    </Link>
-                    <Link 
-                      to="/register" 
-                      className="btn-apple-primary text-sm px-4 py-2"
-                    >
-                      Get Started
-                    </Link>
-                  </div>
-                )}
-              </div>
+            {/* Right Side */}
+            <div className="flex items-center space-x-4">
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="hidden sm:inline text-sm text-gray-400">
+                    {user.email?.split('@')[0]}
+                  </span>
+                  <button 
+                    onClick={handleSignOut}
+                    className="text-gray-400 hover:text-white transition-colors duration-200"
+                  >
+                    <LogOut size={18} />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-6">
+                  <Link 
+                    to="/login" 
+                    className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+                  >
+                    Sign In
+                  </Link>
+                  <Link 
+                    to="/register" 
+                    className="btn-apple-primary text-sm px-4 py-2"
+                  >
+                    Get Started
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
