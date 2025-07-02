@@ -48,7 +48,7 @@ export default function Navbar() {
                 <img 
                   src={aceLogo} 
                   alt="ACE" 
-                  className="h-16 w-auto object-contain"
+                  className="h-12 w-auto object-contain"
                 />
               </motion.div>
             </Link>
