@@ -11,6 +11,7 @@ import UploadPage from "./pages/UploadPage";
 import LibraryPage from "./pages/LibraryPage";
 import CollectionDetailPage from "./pages/CollectionDetailPage";
 import EmbedPage from "./pages/EmbedPage";
+import PricingPage from "./pages/PricingPage";
 
 function App() {
   // const { user, loading } = useAuth();
@@ -42,6 +43,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
 
           {/* Public routes */}
           <Route path="/upload" element={<UploadPage />} />

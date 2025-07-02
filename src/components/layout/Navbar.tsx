@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Music, User, LogOut, Home, Library, Upload } from 'lucide-react';
+import { Music, User, LogOut, Home, Library, Upload, DollarSign } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import aceLogo from '../../assets/ACE Logo v1.png';
@@ -66,6 +66,17 @@ export default function Navbar() {
                 }`}
               >
                 Home
+              </Link>
+              
+              <Link 
+                to="/pricing" 
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive('/pricing') 
+                    ? 'text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Pricing
               </Link>
               
               <Link 
@@ -140,6 +151,18 @@ export default function Navbar() {
             >
               <Home size={16} />
               <span className="mt-1">Home</span>
+            </Link>
+            
+            <Link 
+              to="/pricing" 
+              className={`flex flex-col items-center py-2 px-3 text-xs ${
+                isActive('/pricing') 
+                  ? 'text-white' 
+                  : 'text-gray-400'
+              }`}
+            >
+              <DollarSign size={16} />
+              <span className="mt-1">Pricing</span>
             </Link>
             
             <Link 
