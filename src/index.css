@@ -1,8 +1,856 @@
-/* Apple-style navigation with glow */
-.nav-apple {
-  background: rgba(0, 0, 0, 0.6);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: 0 122 255; /* Apple Blue */
+  --color-secondary: 255 149 0; /* Apple Orange */
+  --color-accent: 255 159 10; /* Lighter Orange */
+  --color-success: 52 199 89; /* Apple Green */
+  --color-warning: 255 204 0; /* Apple Yellow */
+  --color-error: 255 59 48; /* Apple Red */
+  --color-background: 0 0 0; /* Pure Black */
+  --color-surface: 28 28 30; /* Apple Dark Gray */
+  --color-text: 255 255 255; /* Pure White */
+  --color-text-muted: 174 174 178; /* Apple Light Gray */
+}
+
+@font-face {
+  font-family: sfpro;
+  src: url(./font/SFPRODISPLAYREGULAR.OTF);
+}
+
+/* Prevent horizontal overflow */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  @apply bg-black text-white font-sans min-h-screen;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000000;
+}
+
+/* Ensure all containers respect viewport width */
+* {
+  box-sizing: border-box;
+}
+
+.sfpro {
+  font-family: sfpro;
+}
+
+/* Apple-style glass morphism with subtle glow */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.05);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 30px rgba(0, 122, 255, 0.08);
+}
+
+/* Glowing effects */
+.glow-blue {
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.3);
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px rgba(255, 149, 0, 0.3);
+}
+
+.glow-subtle {
+  box-shadow: 0 0 15px rgba(0, 122, 255, 0.1);
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 25px rgba(0, 122, 255, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Apple-style animations */
+.apple-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.apple-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 122, 255, 0.15);
+}
+
+.apple-scale {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.apple-scale:hover {
+  transform: scale(1.02);
+}
+
+.apple-scale:active {
+  transform: scale(0.98);
+}
+
+/* Apple-style focus states with glow */
+.apple-focus:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.3), 0 0 20px rgba(0, 122, 255, 0.2);
+}
+
+/* Apple-style shadows with glow */
+.shadow-apple {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 122, 255, 0.05);
+}
+
+.shadow-apple-lg {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 122, 255, 0.1);
+}
+
+/* Apple-style gradients with glow */
+.gradient-apple-blue {
+  background: linear-gradient(135deg, #007aff 0%, #ff9500 100%);
+  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+}
+
+.gradient-apple-orange {
+  background: linear-gradient(135deg, #ff9500 0%, #ff6b35 100%);
+  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+}
+
+.gradient-apple-green {
+  background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+  box-shadow: 0 4px 15px rgba(52, 199, 89, 0.3);
+}
+
+/* Apple-style text */
+.text-apple-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.text-apple-body {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+.text-apple-caption {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+/* Apple-style cards with glow */
+.card-apple {
+  background: rgba(28, 28, 30, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 122, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-apple:hover {
+  background: rgba(28, 28, 30, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 122, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Apple-style buttons with glow */
+.btn-apple {
+  @apply inline-flex items-center justify-center px-6 py-3 rounded-full font-medium transition-all duration-200;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: none;
+  outline: none;
+}
+
+.btn-apple:focus {
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.3), 0 0 15px rgba(0, 122, 255, 0.2);
+}
+
+.btn-apple-primary {
+  @apply btn-apple text-white;
+  background: linear-gradient(135deg, #007aff 0%, #ff9500 100%);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3), 0 0 15px rgba(255, 149, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-apple-primary:hover {
+  background: linear-gradient(135deg, #0056cc 0%, #e6850e 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3),
+    0 0 20px rgba(255, 149, 0, 0.15);
+}
+
+.btn-apple-secondary {
+  @apply btn-apple text-white;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.btn-apple-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Apple-style inputs with glow */
+.input-apple {
+  @apply w-full px-4 py-3 bg-transparent text-white placeholder-gray-400 transition-all duration-200;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.input-apple:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #007aff;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2), 0 0 20px rgba(0, 122, 255, 0.1);
+}
+
+/* Apple-style navigation with glow - INCREASED TRANSPARENCY */
+.nav-apple {
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Apple-style scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Apple-style loading spinner with glow */
+.spinner-apple {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid #007aff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  filter: drop-shadow(0 0 5px rgba(0, 122, 255, 0.3));
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apple-style progress bar with glow */
+.progress-apple {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.progress-apple-fill {
+  background: linear-gradient(90deg, #007aff 0%, #ff9500 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 149, 0, 0.4);
+}
+
+/* Apple-style waveform with glow */
+.waveform-apple {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(0, 122, 255, 0.05);
+}
+
+.waveform-apple:hover {
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 122, 255, 0.2);
+}
+
+/* Apple-style modal with glow */
+.modal-apple {
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 122, 255, 0.1);
+}
+
+/* Apple-style table */
+.table-apple {
+  background: transparent;
+}
+
+.table-apple tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.table-apple tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 10px rgba(0, 122, 255, 0.05);
+}
+
+/* Apple-style hero section with glow */
+.hero-apple {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 122, 255, 0.1) 0%,
+    transparent 70%
+  );
+}
+
+/* Apple-style feature cards with glow */
+.feature-apple {
+  background: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 0 10px rgba(0, 122, 255, 0.03);
+}
+
+.feature-apple:hover {
+  background: rgba(28, 28, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 122, 255, 0.1);
+}
+
+/* Apple-style embed player */
+.embed-player {
+  background: #000000 !important;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  overflow: auto;
+}
+
+/* Status indicators with glow */
+.status-apple-success {
+  color: #34c759;
+  background: rgba(52, 199, 89, 0.1);
+  border: 1px solid rgba(52, 199, 89, 0.2);
+  box-shadow: 0 0 15px rgba(52, 199, 89, 0.1);
+}
+
+.status-apple-warning {
+  color: #ff9500;
+  background: rgba(255, 149, 0, 0.1);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+  box-shadow: 0 0 15px rgba(255, 149, 0, 0.1);
+}
+
+.status-apple-error {
+  color: #ff3b30;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  box-shadow: 0 0 15px rgba(255, 59, 48, 0.1);
+}
+
+/* Utility classes */
+.container {
+  @apply mx-auto px-4 sm:px-6 lg:px-8;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* Remove all focus outlines and replace with Apple-style glowing focus */
+* {
+  outline: none !important;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+/* Apple-style selection with glow */
+::selection {
+  background: rgba(0, 122, 255, 0.3);
+  text-shadow: 0 0 5px rgba(0, 122, 255, 0.5);
+}
+
+::-moz-selection {
+  background: rgba(0, 122, 255, 0.3);
+  text-shadow: 0 0 5px rgba(0, 122, 255, 0.5);
+}
+
+/* Apple-style smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Apple-style typography scale */
+.text-apple-display {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.text-apple-headline {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.text-apple-subheadline {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Apple-style spacing system */
+.space-apple-xs {
+  margin: 8px;
+}
+.space-apple-sm {
+  margin: 16px;
+}
+.space-apple-md {
+  margin: 24px;
+}
+.space-apple-lg {
+  margin: 32px;
+}
+.space-apple-xl {
+  margin: 48px;
+}
+.space-apple-2xl {
+  margin: 64px;
+}
+
+/* Apple-style grid system */
+.grid-apple {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .grid-apple {
+    gap: 32px;
+  }
+}
+
+/* Apple-style responsive breakpoints */
+@media (max-width: 767px) {
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Apple-style transitions */
+.transition-apple {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.transition-apple-fast {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.transition-apple-slow {
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Glowing text effects */
+.text-glow-blue {
+  text-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+}
+
+.text-glow-orange {
+  text-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
+}
+
+/* Floating animation with glow */
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+    filter: drop-shadow(0 0 10px rgba(0, 122, 255, 0.2));
+  }
+  50% {
+    transform: translateY(-10px);
+    filter: drop-shadow(0 0 20px rgba(0, 122, 255, 0.3));
+  }
+}
+
+/* Pulse glow animation */
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from {
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.2);
+  }
+  to {
+    box-shadow: 0 0 25px rgba(0, 122, 255, 0.4);
+  }
+}
+
+/* Interactive glow on hover */
+.interactive-glow {
+  transition: all 0.3s ease;
+}
+
+.interactive-glow:hover {
+  box-shadow: 0 0 30px rgba(0, 122, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Navbar specific fixes to prevent white bar */
+header {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure no white backgrounds anywhere */
+.bg-white {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fix any potential white elements */
+div,
+section,
+main,
+article,
+aside,
+nav,
+header,
+footer {
+  background-color: transparent;
+}
+
+/* Additional glow effects for home page elements */
+.hero-glow {
+  position: relative;
+}
+
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 122, 255, 0.1) 0%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.feature-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-glow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    rgba(255, 149, 0, 0.05),
+    transparent
+  );
+  animation: rotate 20s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feature-glow:hover::before {
+  opacity: 1;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tamed button glow animations */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.btn-glow:hover::before {
+  left: 100%;
+}
+
+/* Card glow on hover */
+.card-glow {
+  transition: all 0.3s ease;
+}
+
+.card-glow:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 149, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Text glow for headings */
+.heading-glow {
+  text-shadow: 0 0 20px rgba(0, 122, 255, 0.3);
+}
+
+/* Icon glow effects */
+.icon-glow {
+  filter: drop-shadow(0 0 8px rgba(0, 122, 255, 0.4));
+}
+
+.icon-glow-orange {
+  filter: drop-shadow(0 0 8px rgba(255, 149, 0, 0.4));
+}
+
+/* Waveform glow animation */
+.waveform-glow {
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 122, 255, 0.1);
+}
+
+.waveform-glow:hover {
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 122, 255, 0.2);
+}
+
+/* Responsive table fixes */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+  min-width: 600px;
+  width: 100%;
+}
+
+/* Responsive text fixes */
+.responsive-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Grid responsive fixes */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Flex responsive fixes */
+.responsive-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.responsive-flex > * {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .responsive-flex {
+    flex-direction: column;
+  }
+
+  .responsive-flex > * {
+    flex: none;
+    width: 100%;
+  }
+}
+
+/* Button responsive fixes */
+.btn-responsive {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .btn-responsive {
+    width: auto;
+    justify-content: flex-start;
+  }
+}
+
+/* Input responsive fixes */
+.input-responsive {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Card responsive fixes */
+.card-responsive {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Modal responsive fixes */
+.modal-responsive {
+  width: 100%;
+  max-width: 90vw;
+  margin: 1rem;
+}
+
+@media (min-width: 640px) {
+  .modal-responsive {
+    max-width: 500px;
+    margin: 2rem auto;
+  }
+}
+
+/* Navigation responsive fixes */
+.nav-responsive {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Container responsive fixes */
+.container-responsive {
+  width: 100%;
+  max-width: 100vw;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: hidden;
+}
+
+@media (min-width: 640px) {
+  .container-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 1200px;
+  }
+}
+
+/* Prevent any element from causing horizontal scroll */
+.no-overflow {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Ensure pre and code blocks don't overflow */
+pre,
+code {
+  overflow-x: auto;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Ensure tables are responsive */
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+table td,
+table th {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
