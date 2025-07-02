@@ -102,7 +102,7 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-6">
                 <Link 
                   to="/login" 
                   className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
