@@ -37,8 +37,8 @@ export default function Navbar() {
       <div className="w-full relative border-b border-white/10">
         {/* Main Navigation */}
         <div className="h-20 flex items-center relative">
-          {/* Logo - positioned absolutely with more space from left */}
-          <div className="absolute left-8 sm:left-12 lg:left-16 z-10">
+          {/* Logo - positioned absolutely with even more space from left */}
+          <div className="absolute left-12 sm:left-16 lg:left-24 z-10">
             <Link to="/" className="flex items-center group">
               <motion.div
                 whileHover={{ scale: 1.05 }}
