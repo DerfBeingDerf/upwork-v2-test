@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import CollectionCreator from '../components/collection/CollectionCreator';
 import CollectionCard from '../components/collection/CollectionCard';
@@ -12,6 +12,7 @@ import { motion } from 'framer-motion';
 export default function LibraryPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [trackCounts, setTrackCounts] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -23,9 +24,11 @@ export default function LibraryPage() {
 
   useEffect(() => {
     if (!loading && !user) {
+      // Store the current location in sessionStorage so we can redirect back after login
+      sessionStorage.setItem('redirectAfterLogin', location.pathname);
       navigate('/login');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, location.pathname]);
 
   const fetchCollections = async () => {
     if (!user) return;

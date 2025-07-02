@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Upload, Sparkles, ArrowRight, Zap, Music } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -8,6 +8,15 @@ import AudioUploader from '../components/audio/AudioUploader';
 export default function UploadPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      // Store the current location in sessionStorage so we can redirect back after login
+      sessionStorage.setItem('redirectAfterLogin', location.pathname);
+      navigate('/login');
+    }
+  }, [user, loading, navigate, location.pathname]);
 
   if (loading) {
     return (

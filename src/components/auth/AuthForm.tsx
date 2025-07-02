@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -23,13 +23,30 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
 
     try {
       await onSubmit(email, password);
-      navigate('/');
+      
+      // Check if there's a redirect path stored in sessionStorage
+      const redirectPath = sessionStorage.getItem('redirectAfterLogin');
+      if (redirectPath) {
+        sessionStorage.removeItem('redirectAfterLogin');
+        navigate(redirectPath);
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
+
+  // Clear any stored redirect path when component unmounts or mode changes
+  useEffect(() => {
+    return () => {
+      if (mode === 'register') {
+        sessionStorage.removeItem('redirectAfterLogin');
+      }
+    };
+  }, [mode]);
 
   return (
     <div className="max-w-md w-full mx-auto">
