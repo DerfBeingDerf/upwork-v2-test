@@ -38,7 +38,7 @@ export default function HomePage() {
     <div ref={containerRef} className="min-h-screen bg-black">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center hero-apple hero-glow">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div 
               style={{ y: y1 }}
@@ -110,7 +110,7 @@ export default function HomePage() {
 
       {/* Features Section */}
       <section className="py-24 relative">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -150,7 +150,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-orange-500/5" />
-        <div className="container mx-auto px-4 text-center relative">
+        <div className="w-full max-w-none px-8 sm:px-12 lg:px-16 text-center relative">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
