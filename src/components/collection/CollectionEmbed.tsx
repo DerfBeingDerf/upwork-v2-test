@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Code } from 'lucide-react';
+import { Copy, Check, Code, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 type CollectionEmbedProps = {
@@ -43,20 +43,23 @@ export default function CollectionEmbed({ collectionId }: CollectionEmbedProps) 
         </pre>
       </div>
       
-      <div className="flex justify-between items-center">
-        <a 
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <motion.a 
           href={embedUrl} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-blue-500 hover:text-blue-400 text-sm font-medium transition-colors"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/15 text-white rounded-xl font-medium transition-all duration-200 border border-white/20 hover:border-white/30 text-sm"
         >
-          Preview embedded player
-        </a>
+          <ExternalLink size={16} className="mr-2" />
+          Preview Embedded Player
+        </motion.a>
         
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={copyToClipboard}
-          className="btn-apple-primary text-sm py-2"
+          className="btn-apple-primary text-sm py-2 px-6"
         >
           {copied ? (
             <span className="flex items-center">
