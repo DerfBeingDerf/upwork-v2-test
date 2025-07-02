@@ -345,7 +345,7 @@ export default function PricingPage() {
                 Sign In
               </motion.button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
