@@ -29,14 +29,12 @@ export default function Navbar() {
 
   return (
     <motion.header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? 'nav-apple' : 'bg-transparent'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 nav-apple"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <div className="w-full relative">
+      <div className="w-full relative border-b border-white/10">
         {/* Main Navigation */}
         <div className="h-20 flex items-center relative">
           {/* Logo - positioned absolutely with more space from left */}
