@@ -43,9 +43,9 @@ export default function CollectionCard({
 
   return (
     <motion.div 
-      whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="card-apple overflow-hidden relative group"
+      whileHover={{ y: -1, scale: 1.005 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="card-apple-subtle overflow-hidden relative group"
     >
       <Link to={`/collection/${collection.id}`} className="block">
         <div className="h-48 relative overflow-hidden">
@@ -66,8 +66,8 @@ export default function CollectionCard({
               <div className="w-full h-full bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-orange-500/10 flex items-center justify-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/2 to-transparent" />
                 <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ duration: 0.3 }}
+                  whileHover={{ scale: 1.05, rotate: 2 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <ListMusic size={48} className="text-blue-500 relative z-10" />
                 </motion.div>
@@ -93,15 +93,15 @@ export default function CollectionCard({
       
         <div className="p-6">
           <div className="flex items-start justify-between mb-3">
-            <h3 className="font-semibold truncate text-lg flex-1 mr-2 text-white group-hover:text-blue-400 transition-colors duration-300 text-apple-title">
+            <h3 className="font-semibold truncate text-lg flex-1 mr-2 text-white group-hover:text-blue-400 transition-colors duration-200 text-apple-title">
               {collection.title}
             </h3>
             
             {showActions && (
               <div className="relative">
                 <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleMenuToggle}
                   className="text-gray-400 hover:text-white p-2 rounded-lg transition-colors bg-white/5 opacity-0 group-hover:opacity-100 border border-white/10"
                 >
