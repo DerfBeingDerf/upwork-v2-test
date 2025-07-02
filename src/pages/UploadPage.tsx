@@ -37,7 +37,7 @@ export default function UploadPage() {
               transition={{ duration: 0.6 }}
             >
               <div className="inline-flex items-center justify-center h-20 w-20 rounded-3xl bg-white/5 mb-8 border border-white/10">
-                <Upload size={40} className="text-orange-500" />
+                <Upload size={40} className="text-blue-500" />
               </div>
               
               <h1 className="text-apple-headline text-white mb-6">
@@ -84,7 +84,7 @@ export default function UploadPage() {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-white/5 mb-6 border border-white/10">
-            <Upload size={32} className="text-orange-500" />
+            <Upload size={32} className="text-blue-500" />
           </div>
           
           <h1 className="text-apple-headline text-white mb-4">
@@ -105,7 +105,7 @@ export default function UploadPage() {
         >
           <div className="feature-apple p-6 text-center">
             <div className="h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
-              <Zap size={24} className="text-orange-500" />
+              <Zap size={24} className="text-yellow-500" />
             </div>
             <h3 className="font-semibold text-white mb-2 text-apple-title">Instant Upload</h3>
             <p className="text-gray-400 text-sm text-apple-body">Drag, drop, and you're done</p>
@@ -113,7 +113,7 @@ export default function UploadPage() {
           
           <div className="feature-apple p-6 text-center">
             <div className="h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
-              <Music size={24} className="text-orange-500" />
+              <Music size={24} className="text-purple-500" />
             </div>
             <h3 className="font-semibold text-white mb-2 text-apple-title">Auto-Organize</h3>
             <p className="text-gray-400 text-sm text-apple-body">We'll extract metadata automatically</p>
@@ -121,7 +121,7 @@ export default function UploadPage() {
           
           <div className="feature-apple p-6 text-center">
             <div className="h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
-              <Sparkles size={24} className="text-orange-500" />
+              <Sparkles size={24} className="text-green-500" />
             </div>
             <h3 className="font-semibold text-white mb-2 text-apple-title">Share Instantly</h3>
             <p className="text-gray-400 text-sm text-apple-body">Get embeddable players right away</p>
