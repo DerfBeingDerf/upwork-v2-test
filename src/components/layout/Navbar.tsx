@@ -38,7 +38,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto">
         {/* Main Navigation */}
-        <div className="h-16 flex items-center justify-between">
+        <div className="h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center group">
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -48,7 +48,7 @@ export default function Navbar() {
               <img 
                 src={aceLogo} 
                 alt="ACE" 
-                className="h-10 w-auto object-contain"
+                className="h-16 w-auto object-contain"
               />
             </motion.div>
           </Link>

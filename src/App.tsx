@@ -37,7 +37,7 @@ function App() {
     <>
       {!isEmbed && <Navbar />}
 
-      <main className={isEmbed ? "" : "min-h-screen pt-16"}>
+      <main className={isEmbed ? "" : "min-h-screen pt-20"}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
