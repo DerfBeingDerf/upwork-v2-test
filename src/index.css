@@ -1,10 +1,23 @@
-/* Apple-style navigation with glow */
-.nav-apple {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: 0 122 255; /* Apple Blue */
+  --color-secondary: 255 149 0; /* Apple Orange */
+  --color-accent: 255 159 10; /* Lighter Orange */
+  --color-success: 52 199 89; /* Apple Green */
+  --color-warning: 255 204 0; /* Apple Yellow */
+  --color-error: 255 59 48; /* Apple Red */
+  --color-background: 0 0 0; /* Pure Black */
+  --color-surface: 28 28 30; /* Apple Dark Gray */
+  --color-text: 255 255 255; /* Pure White */
+  --color-text-muted: 174 174 178; /* Apple Light Gray */
+}
+
+@font-face {
+  font-family: sfpro;
+  src: url(./font/SFPRODISPLAYREGULAR.OTF);
 }
 
 /* Prevent horizontal overflow */
@@ -213,6 +226,15 @@ body {
   background: rgba(255, 255, 255, 0.08);
   border-color: #007aff;
   box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2), 0 0 20px rgba(0, 122, 255, 0.1);
+}
+
+/* Apple-style navigation with glow */
+.nav-apple {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 /* Apple-style scrollbar */
@@ -535,6 +557,14 @@ header {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+}
+
+.nav-apple {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Ensure no white backgrounds anywhere */
