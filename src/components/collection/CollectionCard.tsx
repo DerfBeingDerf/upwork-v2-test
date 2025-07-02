@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Music, ListMusic, Share2, MoreVertical, Trash2, Image } from 'lucide-react';
+import { Music, ListMusic, Share2, MoreVertical, Trash2 } from 'lucide-react';
 import { Collection } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -145,18 +145,11 @@ export default function CollectionCard({
             </p>
           )}
           
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-4 flex items-center">
             <div className="flex items-center text-sm text-gray-400">
               <Music size={14} className="mr-2" />
               <span className="font-medium text-apple-caption">{trackCount} {trackCount === 1 ? 'track' : 'tracks'}</span>
             </div>
-            
-            {hasCoverImage && (
-              <div className="flex items-center text-xs text-gray-500">
-                <Image size={12} className="mr-1" />
-                <span>Custom cover</span>
-              </div>
-            )}
           </div>
         </div>
       </Link>
