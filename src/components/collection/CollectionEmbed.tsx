@@ -59,7 +59,7 @@ export default function CollectionEmbed({ collectionId }: CollectionEmbedProps) 
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={copyToClipboard}
-          className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-all duration-200 border border-blue-500/50 hover:border-blue-400/50 text-sm shadow-lg"
+          className="btn-apple-primary text-sm px-4 py-2"
         >
           {copied ? (
             <span className="flex items-center">
