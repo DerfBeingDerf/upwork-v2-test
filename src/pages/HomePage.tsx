@@ -58,7 +58,7 @@ export default function HomePage() {
                 Create stunning audio collections with embeddable players that work beautifully anywhere on the web.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-8 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 {user ? (
                   <>
                     <motion.button 
@@ -85,20 +85,20 @@ export default function HomePage() {
                     <motion.button 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => navigate('/login')}
-                      className="btn-apple-secondary px-8 py-4 text-lg order-1 sm:order-first"
-                    >
-                      Sign In
-                    </motion.button>
-                    <motion.button 
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
                       onClick={() => navigate('/register')}
-                      className="btn-apple-primary px-8 py-4 text-lg order-first sm:order-1"
+                      className="btn-apple-primary px-8 py-4 text-lg"
                     >
                       <Sparkles className="mr-2 h-5 w-5 icon-glow" />
                       Get Started
                       <ArrowRight className="ml-2 h-5 w-5" />
+                    </motion.button>
+                    <motion.button 
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => navigate('/login')}
+                      className="btn-apple-secondary px-8 py-4 text-lg"
+                    >
+                      Sign In
                     </motion.button>
                   </>
                 )}
