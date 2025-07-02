@@ -19,12 +19,12 @@ function App() {
   // Update page title based on route
   useEffect(() => {
     const pathSegments = location.pathname.split("/").filter(Boolean);
-    let title = "AudioShare";
+    let title = "ACE";
 
     if (pathSegments.length > 0) {
       const page =
         pathSegments[0].charAt(0).toUpperCase() + pathSegments[0].slice(1);
-      title = `${page} | AudioShare`;
+      title = `${page} | ACE`;
     }
 
     document.title = title;

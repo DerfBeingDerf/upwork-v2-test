@@ -62,7 +62,7 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
           </div>
         </motion.div>
         <h1 className="text-apple-headline text-white mb-4">
-          {mode === 'login' ? 'Welcome Back' : 'Join AudioShare'}
+          {mode === 'login' ? 'Welcome Back' : 'Join ACE'}
         </h1>
         <p className="text-gray-400 text-apple-body">
           {mode === 'login' 
