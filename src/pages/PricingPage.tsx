@@ -14,7 +14,6 @@ export default function PricingPage() {
   });
 
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   const plans = [
     {
@@ -105,8 +104,8 @@ export default function PricingPage() {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-black">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center hero-apple hero-glow">
+      {/* Hero Section - Reduced height */}
+      <section className="relative pt-32 pb-16 flex items-center hero-apple hero-glow">
         <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div 
@@ -115,7 +114,7 @@ export default function PricingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <h1 className="text-apple-display text-white mb-6 heading-glow">
+              <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 heading-glow">
                 Choose Your
                 <br />
                 <span className="bg-gradient-to-r from-blue-500 to-orange-500 bg-clip-text text-transparent">
@@ -123,7 +122,7 @@ export default function PricingPage() {
                 </span>
               </h1>
               
-              <p className="text-apple-subheadline text-gray-300 mb-12 max-w-3xl mx-auto">
+              <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 From free sharing to professional solutions, find the perfect plan for your audio content needs.
               </p>
             </motion.div>
@@ -131,11 +130,11 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing Cards */}
-      <section className="py-24 relative">
+      {/* Pricing Cards - Reduced padding */}
+      <section className="py-16 relative">
         <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
           <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-3 gap-6">
               {plans.map((plan, index) => (
                 <motion.div
                   key={plan.name}
@@ -143,11 +142,11 @@ export default function PricingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className={`relative ${plan.popular ? 'lg:-mt-8 lg:mb-8' : ''}`}
+                  className={`relative ${plan.popular ? 'lg:-mt-4 lg:mb-4' : ''}`}
                 >
                   {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-lg">
                         Most Popular
                       </div>
                     </div>
@@ -157,20 +156,20 @@ export default function PricingPage() {
                     {/* Background gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-50`} />
                     
-                    <div className="relative p-8 flex flex-col h-full">
-                      {/* Plan Header */}
-                      <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-white/5 mb-4 border border-white/10">
+                    <div className="relative p-6 flex flex-col h-full">
+                      {/* Plan Header - Reduced spacing */}
+                      <div className="text-center mb-6">
+                        <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-white/5 mb-3 border border-white/10">
                           {plan.icon}
                         </div>
-                        <h3 className="text-2xl font-semibold text-white mb-2 text-apple-title">{plan.name}</h3>
+                        <h3 className="text-xl font-semibold text-white mb-2 text-apple-title">{plan.name}</h3>
                         <p className="text-gray-400 text-sm text-apple-body">{plan.description}</p>
                       </div>
 
-                      {/* Pricing */}
-                      <div className="text-center mb-8">
+                      {/* Pricing - Reduced spacing */}
+                      <div className="text-center mb-6">
                         <div className="flex items-baseline justify-center">
-                          <span className="text-4xl font-bold text-white">{plan.price}</span>
+                          <span className="text-3xl font-bold text-white">{plan.price}</span>
                           {plan.price !== 'Free' && (
                             <span className="text-gray-400 ml-2 text-apple-body">/{plan.period}</span>
                           )}
@@ -180,8 +179,8 @@ export default function PricingPage() {
                         )}
                       </div>
 
-                      {/* Features - flex-grow to push button to bottom */}
-                      <div className="space-y-4 mb-8 flex-grow">
+                      {/* Features - Reduced spacing */}
+                      <div className="space-y-3 mb-6 flex-grow">
                         {plan.features.map((feature, featureIndex) => (
                           <div key={featureIndex} className="flex items-center">
                             <Check size={16} className="text-green-500 mr-3 flex-shrink-0" />
@@ -190,20 +189,20 @@ export default function PricingPage() {
                         ))}
                       </div>
 
-                      {/* CTA Button - positioned at bottom */}
+                      {/* CTA Button */}
                       <div className="mt-auto">
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleGetStarted(plan.name)}
-                          className={`w-full py-4 rounded-full font-medium transition-all duration-200 text-lg ${
+                          className={`w-full py-3 rounded-full font-medium transition-all duration-200 ${
                             plan.popular
                               ? 'btn-apple-primary'
                               : 'btn-apple-secondary'
                           }`}
                         >
                           {plan.cta}
-                          <ArrowRight className="ml-2 h-5 w-5 inline" />
+                          <ArrowRight className="ml-2 h-4 w-4 inline" />
                         </motion.button>
                       </div>
                     </div>
@@ -215,25 +214,25 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 relative">
+      {/* Features Section - Reduced padding */}
+      <section className="py-16 relative">
         <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-12"
           >
-            <h2 className="text-apple-headline text-white mb-6 heading-glow">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4 heading-glow">
               Why Choose ACE?
             </h2>
-            <p className="text-apple-subheadline text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
               Built for creators who demand the best in audio sharing and embedding
             </p>
           </motion.div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -241,12 +240,12 @@ export default function PricingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="feature-apple feature-glow p-8 text-center group"
+                className="feature-apple feature-glow p-6 text-center group"
               >
-                <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-white/5 mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 border border-white/10 glow-subtle">
+                <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-white/5 mb-4 mx-auto group-hover:scale-110 transition-transform duration-300 border border-white/10 glow-subtle">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-white text-apple-title">{feature.title}</h3>
+                <h3 className="text-lg font-semibold mb-3 text-white text-apple-title">{feature.title}</h3>
                 <p className="text-gray-400 text-apple-body">{feature.description}</p>
               </motion.div>
             ))}
@@ -254,8 +253,8 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-24 relative">
+      {/* FAQ Section - Reduced padding and spacing */}
+      <section className="py-16 relative">
         <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
           <div className="max-w-4xl mx-auto">
             <motion.div 
@@ -263,14 +262,14 @@ export default function PricingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="text-center mb-16"
+              className="text-center mb-12"
             >
-              <h2 className="text-apple-headline text-white mb-6 heading-glow">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4 heading-glow">
                 Frequently Asked Questions
               </h2>
             </motion.div>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {[
                 {
                   question: "Can I upgrade or downgrade my plan anytime?",
@@ -295,9 +294,9 @@ export default function PricingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="card-apple-subtle p-6"
+                  className="card-apple-subtle p-5"
                 >
-                  <h3 className="text-lg font-semibold text-white mb-3 text-apple-title">{faq.question}</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2 text-apple-title">{faq.question}</h3>
                   <p className="text-gray-400 text-apple-body">{faq.answer}</p>
                 </motion.div>
               ))}
@@ -306,8 +305,8 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 relative">
+      {/* CTA Section - Reduced padding */}
+      <section className="py-16 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-orange-500/5" />
         <div className="w-full max-w-none px-8 sm:px-12 lg:px-16 text-center relative">
           <motion.div 
@@ -317,10 +316,10 @@ export default function PricingPage() {
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-apple-headline text-white mb-6 heading-glow">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4 heading-glow">
               Ready to Share Your Audio?
             </h2>
-            <p className="text-apple-subheadline text-gray-400 mb-10">
+            <p className="text-lg text-gray-400 mb-8">
               Start with our free plan and upgrade as you grow. No credit card required to get started.
             </p>
             
@@ -329,7 +328,7 @@ export default function PricingPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleGetStarted('Free')}
-                className="btn-apple-primary px-10 py-4 text-lg"
+                className="btn-apple-primary px-8 py-3 text-lg"
               >
                 <Sparkles className="mr-2 h-5 w-5 icon-glow" />
                 Start Free
@@ -340,7 +339,7 @@ export default function PricingPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/login')}
-                className="btn-apple-secondary px-10 py-4 text-lg"
+                className="btn-apple-secondary px-8 py-3 text-lg"
               >
                 Sign In
               </motion.button>
