@@ -69,17 +69,6 @@ export default function Navbar() {
               </Link>
               
               <Link 
-                to="/pricing" 
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  isActive('/pricing') 
-                    ? 'text-white' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Pricing
-              </Link>
-              
-              <Link 
                 to="/library" 
                 className={`text-sm font-medium transition-colors duration-200 ${
                   isActive('/library') 
@@ -99,6 +88,17 @@ export default function Navbar() {
                 }`}
               >
                 Upload
+              </Link>
+              
+              <Link 
+                to="/pricing" 
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive('/pricing') 
+                    ? 'text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Pricing
               </Link>
             </nav>
           </div>
@@ -154,18 +154,6 @@ export default function Navbar() {
             </Link>
             
             <Link 
-              to="/pricing" 
-              className={`flex flex-col items-center py-2 px-3 text-xs ${
-                isActive('/pricing') 
-                  ? 'text-white' 
-                  : 'text-gray-400'
-              }`}
-            >
-              <DollarSign size={16} />
-              <span className="mt-1">Pricing</span>
-            </Link>
-            
-            <Link 
               to="/library" 
               className={`flex flex-col items-center py-2 px-3 text-xs ${
                 isActive('/library') 
@@ -187,6 +175,18 @@ export default function Navbar() {
             >
               <Upload size={16} />
               <span className="mt-1">Upload</span>
+            </Link>
+            
+            <Link 
+              to="/pricing" 
+              className={`flex flex-col items-center py-2 px-3 text-xs ${
+                isActive('/pricing') 
+                  ? 'text-white' 
+                  : 'text-gray-400'
+              }`}
+            >
+              <DollarSign size={16} />
+              <span className="mt-1">Pricing</span>
             </Link>
           </nav>
         </div>
