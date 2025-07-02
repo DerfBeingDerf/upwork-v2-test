@@ -170,7 +170,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Subtle hover effects for specific sections */
+/* Very subtle hover effects for specific sections */
 .card-apple-subtle {
   background: rgba(28, 28, 30, 0.8);
   backdrop-filter: blur(20px);
@@ -178,14 +178,14 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 122, 255, 0.05);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .card-apple-subtle:hover {
-  background: rgba(28, 28, 30, 0.85);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 12px rgba(0, 122, 255, 0.06);
-  transform: translateY(-1px);
+  background: rgba(28, 28, 30, 0.82);
+  border-color: rgba(255, 255, 255, 0.11);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.32), 0 0 11px rgba(0, 122, 255, 0.06);
+  transform: translateY(-0.5px);
 }
 
 /* Apple-style buttons with glow */
@@ -339,11 +339,11 @@ body {
 
 .table-apple tr {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.15s ease;
+  transition: all 0.1s ease;
 }
 
 .table-apple tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.015);
 }
 
 /* Apple-style hero section with glow */
