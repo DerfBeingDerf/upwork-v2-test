@@ -396,15 +396,15 @@ export default function CollectionDetailPage() {
 
               {/* Fully Responsive Track List */}
               <div className="w-full">
-                {/* Large Desktop View (xl+) - Full table */}
+                {/* Large Desktop View (xl+) - Full table with adjusted widths */}
                 <div className="hidden xl:block">
                   <table className="table-apple w-full">
                     <thead className="bg-white/5 border-b border-white/10">
                       <tr>
                         <th className="px-4 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-12">#</th>
-                        <th className="px-4 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
-                        <th className="px-4 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-32">Artist</th>
-                        <th className="px-4 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-20">Duration</th>
+                        <th className="px-4 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-64">Title</th>
+                        <th className="px-4 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-48">Artist</th>
+                        <th className="px-4 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-24">Duration</th>
                         {isOwner && (
                           <th className="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-12"></th>
                         )}
@@ -422,17 +422,17 @@ export default function CollectionDetailPage() {
                           <td className="px-4 py-4 whitespace-nowrap text-gray-400 font-medium text-sm">
                             {index + 1}
                           </td>
-                          <td className="px-4 py-4 min-w-0">
+                          <td className="px-4 py-4 w-64">
                             <div className="font-semibold text-white text-sm truncate">{track.audio_file.title}</div>
                           </td>
-                          <td className="px-4 py-4 text-gray-400 min-w-0">
+                          <td className="px-4 py-4 text-gray-400 w-48">
                             <div className="truncate text-sm">{track.audio_file.artist || 'Unknown'}</div>
                           </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-gray-400 font-medium text-sm">
+                          <td className="px-4 py-4 whitespace-nowrap text-gray-400 font-medium text-sm w-24">
                             {formatDuration(track.audio_file.duration)}
                           </td>
                           {isOwner && (
-                            <td className="px-2 py-4 whitespace-nowrap">
+                            <td className="px-2 py-4 whitespace-nowrap w-12">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -456,9 +456,9 @@ export default function CollectionDetailPage() {
                     <thead className="bg-white/5 border-b border-white/10">
                       <tr>
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-8">#</th>
-                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
-                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-24">Artist</th>
-                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-16">Time</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-48">Title</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-32">Artist</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-20">Duration</th>
                         {isOwner && (
                           <th className="px-2 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-10"></th>
                         )}
@@ -476,13 +476,13 @@ export default function CollectionDetailPage() {
                           <td className="px-3 py-3 whitespace-nowrap text-gray-400 font-medium text-sm">
                             {index + 1}
                           </td>
-                          <td className="px-3 py-3 min-w-0">
+                          <td className="px-3 py-3 w-48">
                             <div className="font-semibold text-white text-sm truncate">{track.audio_file.title}</div>
                           </td>
-                          <td className="px-3 py-3 text-gray-400 min-w-0">
+                          <td className="px-3 py-3 text-gray-400 w-32">
                             <div className="truncate text-xs">{track.audio_file.artist || 'Unknown'}</div>
                           </td>
-                          <td className="px-3 py-3 whitespace-nowrap text-gray-400 font-medium text-xs">
+                          <td className="px-3 py-3 whitespace-nowrap text-gray-400 font-medium text-xs w-20">
                             {formatDuration(track.audio_file.duration)}
                           </td>
                           {isOwner && (
@@ -509,8 +509,8 @@ export default function CollectionDetailPage() {
                   <div className="bg-white/5 border-b border-white/10 px-4 py-3">
                     <div className="grid grid-cols-12 gap-2 text-xs font-medium text-gray-400 uppercase tracking-wider">
                       <div className="col-span-1">#</div>
-                      <div className="col-span-7">Track</div>
-                      <div className="col-span-3">Duration</div>
+                      <div className="col-span-6">Track</div>
+                      <div className="col-span-4">Duration</div>
                       {isOwner && <div className="col-span-1"></div>}
                     </div>
                   </div>
@@ -526,11 +526,11 @@ export default function CollectionDetailPage() {
                         <div className="col-span-1 text-gray-400 font-medium text-sm">
                           {index + 1}
                         </div>
-                        <div className="col-span-7 min-w-0">
+                        <div className="col-span-6 min-w-0">
                           <div className="font-semibold text-white text-sm truncate">{track.audio_file.title}</div>
                           <div className="text-xs text-gray-400 truncate">{track.audio_file.artist || 'Unknown'}</div>
                         </div>
-                        <div className="col-span-3 text-gray-400 font-medium text-sm">
+                        <div className="col-span-4 text-gray-400 font-medium text-sm">
                           {formatDuration(track.audio_file.duration)}
                         </div>
                         {isOwner && (
