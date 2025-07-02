@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Music, User, LogOut, Home, Library, Upload } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
+import aceLogo from '../../assets/ACE Logo v1.png';
 
 export default function Navbar() {
   const { user, signOut } = useAuth();
@@ -38,17 +39,18 @@ export default function Navbar() {
       <div className="container mx-auto">
         {/* Main Navigation */}
         <div className="h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/" className="flex items-center group">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-white"
+              className="flex items-center"
             >
-              <Music size={24} />
+              <img 
+                src={aceLogo} 
+                alt="ACE" 
+                className="h-10 w-auto object-contain"
+              />
             </motion.div>
-            <span className="text-xl font-semibold text-white text-apple-title">
-              AudioShare
-            </span>
           </Link>
 
           {/* Center Navigation */}
