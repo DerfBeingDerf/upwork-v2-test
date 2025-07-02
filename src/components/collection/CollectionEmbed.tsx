@@ -27,7 +27,7 @@ export default function CollectionEmbed({ collectionId }: CollectionEmbedProps) 
   };
 
   return (
-    <div className="card-apple p-6">
+    <div className="card-apple-subtle p-6">
       <div className="flex items-center mb-6">
         <Code className="text-blue-500 mr-3" size={24} />
         <h3 className="text-xl font-semibold text-white text-apple-title">Embed Collection</h3>
