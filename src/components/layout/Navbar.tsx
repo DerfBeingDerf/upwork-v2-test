@@ -57,7 +57,7 @@ export default function Navbar() {
           </div>
 
           {/* Center Navigation - aligned with main content container */}
-          <div className="container mx-auto flex items-center justify-between">
+          <div className="w-full max-w-none px-8 sm:px-12 lg:px-16 flex items-center justify-between">
             {/* Spacer for logo */}
             <div className="w-20"></div>
             
