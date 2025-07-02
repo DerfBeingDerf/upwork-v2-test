@@ -394,58 +394,101 @@ export default function CollectionDetailPage() {
                 <h2 className="text-xl font-semibold text-white text-apple-title">Tracks</h2>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="table-apple w-full min-w-[600px]">
-                  <thead className="bg-white/5 border-b border-white/10">
-                    <tr>
-                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-12">#</th>
-                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
-                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell">Artist</th>
-                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">Duration</th>
-                      {isOwner && (
-                        <th className="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-8"></th>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tracks.map((track, index) => (
-                      <tr
-                        key={track.id}
-                        className={`cursor-pointer transition-colors ${
-                          index === currentTrackIndex ? 'bg-blue-500/10 border-blue-500/20' : 'hover:bg-white/5'
-                        }`}
-                        onClick={() => setCurrentTrackIndex(index)}
-                      >
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-400 font-medium">
-                          {index + 1}
-                        </td>
-                        <td className="px-4 sm:px-6 py-4 min-w-0">
-                          <div className="font-semibold text-white text-apple-caption truncate">{track.audio_file.title}</div>
-                          <div className="text-sm text-gray-400 md:hidden truncate">{track.audio_file.artist || 'Unknown'}</div>
-                        </td>
-                        <td className="px-4 sm:px-6 py-4 text-gray-400 hidden md:table-cell min-w-0">
-                          <div className="truncate">{track.audio_file.artist || 'Unknown'}</div>
-                        </td>
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-400 hidden sm:table-cell font-medium">
-                          {formatDuration(track.audio_file.duration)}
-                        </td>
+              {/* Responsive Track List */}
+              <div className="w-full">
+                {/* Desktop Table View */}
+                <div className="hidden lg:block">
+                  <table className="table-apple w-full">
+                    <thead className="bg-white/5 border-b border-white/10">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-12">#</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Artist</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Duration</th>
                         {isOwner && (
-                          <td className="px-2 py-4 whitespace-nowrap">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleTrackAction(track);
-                              }}
-                              className="text-gray-400 hover:text-white p-2 rounded-xl transition-colors bg-white/5 border border-white/10"
-                            >
-                              <MoreVertical size={16} />
-                            </button>
-                          </td>
+                          <th className="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-8"></th>
                         )}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {tracks.map((track, index) => (
+                        <tr
+                          key={track.id}
+                          className={`cursor-pointer transition-colors ${
+                            index === currentTrackIndex ? 'bg-blue-500/10 border-blue-500/20' : 'hover:bg-white/5'
+                          }`}
+                          onClick={() => setCurrentTrackIndex(index)}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-400 font-medium">
+                            {index + 1}
+                          </td>
+                          <td className="px-6 py-4 min-w-0">
+                            <div className="font-semibold text-white text-apple-caption truncate">{track.audio_file.title}</div>
+                          </td>
+                          <td className="px-6 py-4 text-gray-400 min-w-0">
+                            <div className="truncate">{track.audio_file.artist || 'Unknown'}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-400 font-medium">
+                            {formatDuration(track.audio_file.duration)}
+                          </td>
+                          {isOwner && (
+                            <td className="px-2 py-4 whitespace-nowrap">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTrackAction(track);
+                                }}
+                                className="text-gray-400 hover:text-white p-2 rounded-xl transition-colors bg-white/5 border border-white/10"
+                              >
+                                <MoreVertical size={16} />
+                              </button>
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile/Tablet Card View */}
+                <div className="lg:hidden">
+                  {tracks.map((track, index) => (
+                    <div
+                      key={track.id}
+                      className={`p-4 border-b border-white/10 cursor-pointer transition-colors ${
+                        index === currentTrackIndex ? 'bg-blue-500/10' : 'hover:bg-white/5'
+                      }`}
+                      onClick={() => setCurrentTrackIndex(index)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4 min-w-0 flex-1">
+                          <div className="text-gray-400 font-medium text-sm w-6 flex-shrink-0">
+                            {index + 1}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-white text-apple-caption truncate">
+                              {track.audio_file.title}
+                            </div>
+                            <div className="text-sm text-gray-400 truncate">
+                              {track.audio_file.artist || 'Unknown'} • {formatDuration(track.audio_file.duration)}
+                            </div>
+                          </div>
+                        </div>
+                        {isOwner && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleTrackAction(track);
+                            }}
+                            className="text-gray-400 hover:text-white p-2 rounded-xl transition-colors bg-white/5 border border-white/10 flex-shrink-0 ml-2"
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
