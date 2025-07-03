@@ -421,7 +421,7 @@ export default function PricingPage() {
                 Get Lifetime Access
               </motion.button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
