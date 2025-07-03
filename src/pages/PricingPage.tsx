@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Zap, Crown, Sparkles, ArrowRight, Music, Upload, Globe, Calendar, Infinity } from 'lucide-react';
+import { Check, Zap, Crown, Sparkles, ArrowRight, Music, Upload, Globe, Calendar } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
@@ -41,7 +41,7 @@ export default function PricingPage() {
     {
       name: 'Pro Lifetime',
       price: '$50',
-      period: 'one-time',
+      period: 'one-time payment',
       description: 'Get embeddable players forever with a single payment',
       icon: <Crown className="h-6 w-6 text-purple-500" />,
       features: [
@@ -51,8 +51,8 @@ export default function PricingPage() {
         'Future feature updates',
         'Premium support',
         'Best value option',
-        'One-time payment',
-        'Forever access'
+        'Pay once, own forever',
+        'No subscription fees'
       ],
       cta: 'Buy Lifetime Access',
       popular: false,
@@ -162,23 +162,21 @@ export default function PricingPage() {
 
                       {/* Pricing */}
                       <div className="text-center mb-6">
-                        <div className="flex items-baseline justify-center">
+                        <div className="mb-2">
                           <span className="text-4xl font-bold text-white">{plan.price}</span>
-                          <span className="text-gray-400 ml-2 text-apple-body">
-                            {plan.period === 'one-time' ? (
-                              <span className="flex items-center">
-                                <Infinity size={16} className="mr-1" />
-                                {plan.period}
-                              </span>
-                            ) : (
-                              `/${plan.period}`
-                            )}
-                          </span>
+                        </div>
+                        <div className="text-gray-400 text-sm text-apple-body">
+                          {plan.period}
                         </div>
                         {plan.name === 'Pro Monthly' && (
-                          <div className="mt-2 text-green-400 text-sm font-medium flex items-center justify-center">
+                          <div className="mt-3 text-green-400 text-sm font-medium flex items-center justify-center">
                             <Calendar size={14} className="mr-1" />
                             First week free
+                          </div>
+                        )}
+                        {plan.name === 'Pro Lifetime' && (
+                          <div className="mt-3 text-purple-400 text-sm font-medium">
+                            Pay once, own forever
                           </div>
                         )}
                       </div>
@@ -423,7 +421,7 @@ export default function PricingPage() {
                 Get Lifetime Access
               </motion.button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>
