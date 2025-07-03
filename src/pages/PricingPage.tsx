@@ -197,11 +197,7 @@ export default function PricingPage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleGetStarted(plan.name)}
-                          className={`w-full py-4 text-lg font-medium rounded-full transition-all duration-200 ${
-                            plan.name === 'Pro Lifetime'
-                              ? 'text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 shadow-lg hover:shadow-purple-500/25'
-                              : 'btn-apple-primary'
-                          }`}
+                          className="btn-apple-primary w-full py-4 text-lg"
                         >
                           {plan.cta}
                           <ArrowRight className="ml-2 h-4 w-4 inline" />
@@ -419,7 +415,7 @@ export default function PricingPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleGetStarted('Pro Lifetime')}
-                className="px-8 py-3 text-lg font-medium rounded-full transition-all duration-200 text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 shadow-lg hover:shadow-purple-500/25"
+                className="btn-apple-secondary px-8 py-3 text-lg"
               >
                 <Crown className="mr-2 h-5 w-5" />
                 Get Lifetime Access
