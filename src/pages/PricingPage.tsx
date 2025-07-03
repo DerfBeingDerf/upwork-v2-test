@@ -50,7 +50,9 @@ export default function PricingPage() {
         'No recurring payments',
         'Future feature updates',
         'Premium support',
-        'Best value option'
+        'Best value option',
+        'One-time payment',
+        'Forever access'
       ],
       cta: 'Buy Lifetime Access',
       popular: false,
@@ -119,8 +121,8 @@ export default function PricingPage() {
       {/* Pricing Cards */}
       <section className="py-16 relative">
         <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {plans.map((plan, index) => (
                 <motion.div
                   key={plan.name}
@@ -128,7 +130,7 @@ export default function PricingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className={`relative ${plan.popular ? 'lg:-mt-4 lg:mb-4' : ''}`}
+                  className="relative"
                 >
                   {plan.badge && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
@@ -142,9 +144,8 @@ export default function PricingPage() {
                     </div>
                   )}
                   
-                  <div className={`card-apple h-full relative overflow-hidden ${
-                    plan.popular ? 'border-orange-500/30' : 
-                    plan.highlight ? 'border-purple-500/30' : ''
+                  <div className={`card-apple relative overflow-hidden min-h-[600px] flex flex-col ${
+                    plan.popular ? 'border-orange-500/30' : 'border-purple-500/30'
                   }`}>
                     {/* Background gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-50`} />
