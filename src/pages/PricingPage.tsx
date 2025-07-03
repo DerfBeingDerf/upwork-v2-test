@@ -17,32 +17,14 @@ export default function PricingPage() {
 
   const plans = [
     {
-      name: 'Free',
-      price: 'Free',
-      period: 'forever',
-      description: 'Perfect for getting started with audio sharing',
-      icon: <Music className="h-6 w-6 text-blue-500 icon-glow" />,
-      features: [
-        'Unlimited collections',
-        'Unlimited audio files',
-        'Basic audio player',
-        'Public sharing',
-        'Community support',
-        'No embeddable players'
-      ],
-      cta: 'Get Started Free',
-      popular: false,
-      gradient: 'from-blue-500/10 to-blue-600/5',
-      highlight: false
-    },
-    {
       name: 'Pro Monthly',
       price: '$5',
       period: 'per month',
       description: 'Unlock embeddable players with flexible monthly billing',
       icon: <Zap className="h-6 w-6 text-orange-500 icon-glow-orange" />,
       features: [
-        'Everything in Free',
+        'Unlimited collections',
+        'Unlimited audio files',
         'Embeddable audio players',
         'Custom player styling',
         'Advanced analytics',
@@ -137,8 +119,8 @@ export default function PricingPage() {
       {/* Pricing Cards */}
       <section className="py-16 relative">
         <div className="w-full max-w-none px-8 sm:px-12 lg:px-16">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-3 gap-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {plans.map((plan, index) => (
                 <motion.div
                   key={plan.name}
@@ -167,7 +149,7 @@ export default function PricingPage() {
                     {/* Background gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-50`} />
                     
-                    <div className="relative p-6 flex flex-col h-full">
+                    <div className="relative p-8 flex flex-col h-full">
                       {/* Plan Header */}
                       <div className="text-center mb-6">
                         <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-white/5 mb-3 border border-white/10">
@@ -180,23 +162,18 @@ export default function PricingPage() {
                       {/* Pricing */}
                       <div className="text-center mb-6">
                         <div className="flex items-baseline justify-center">
-                          <span className="text-3xl font-bold text-white">{plan.price}</span>
-                          {plan.price !== 'Free' && (
-                            <span className="text-gray-400 ml-2 text-apple-body">
-                              {plan.period === 'one-time' ? (
-                                <span className="flex items-center">
-                                  <Infinity size={16} className="mr-1" />
-                                  {plan.period}
-                                </span>
-                              ) : (
-                                `/${plan.period}`
-                              )}
-                            </span>
-                          )}
+                          <span className="text-4xl font-bold text-white">{plan.price}</span>
+                          <span className="text-gray-400 ml-2 text-apple-body">
+                            {plan.period === 'one-time' ? (
+                              <span className="flex items-center">
+                                <Infinity size={16} className="mr-1" />
+                                {plan.period}
+                              </span>
+                            ) : (
+                              `/${plan.period}`
+                            )}
+                          </span>
                         </div>
-                        {plan.price === 'Free' && (
-                          <span className="text-gray-400 text-sm text-apple-body">{plan.period}</span>
-                        )}
                         {plan.name === 'Pro Monthly' && (
                           <div className="mt-2 text-green-400 text-sm font-medium flex items-center justify-center">
                             <Calendar size={14} className="mr-1" />
@@ -206,7 +183,7 @@ export default function PricingPage() {
                       </div>
 
                       {/* Features */}
-                      <div className="space-y-3 mb-6 flex-grow">
+                      <div className="space-y-3 mb-8 flex-grow">
                         {plan.features.map((feature, featureIndex) => (
                           <div key={featureIndex} className="flex items-center">
                             <Check size={16} className="text-green-500 mr-3 flex-shrink-0" />
@@ -221,11 +198,7 @@ export default function PricingPage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleGetStarted(plan.name)}
-                          className={`w-full py-3 rounded-full font-medium transition-all duration-200 ${
-                            plan.popular || plan.highlight
-                              ? 'btn-apple-primary'
-                              : 'btn-apple-secondary'
-                          }`}
+                          className="btn-apple-primary w-full py-4 text-lg"
                         >
                           {plan.cta}
                           <ArrowRight className="ml-2 h-4 w-4 inline" />
@@ -252,51 +225,55 @@ export default function PricingPage() {
               className="text-center mb-12"
             >
               <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4 heading-glow">
-                What's the Difference?
+                What's Included
               </h2>
               <p className="text-lg text-gray-400">
-                Understanding your options for embeddable audio players
+                Both plans include everything you need for professional audio sharing
               </p>
             </motion.div>
 
             <div className="card-apple-subtle p-8">
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4 text-apple-title">Free Plan</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4 text-apple-title">Core Features</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                       <span className="text-gray-300 text-apple-body">Upload and organize unlimited audio files</span>
                     </li>
                     <li className="flex items-start">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-gray-300 text-apple-body">Share collections with direct links</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-300 text-apple-body">Create unlimited collections</span>
                     </li>
                     <li className="flex items-start">
-                      <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-gray-400 text-apple-body">No embeddable players for websites</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-300 text-apple-body">Beautiful waveform audio players</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-300 text-apple-body">Public sharing with direct links</span>
                     </li>
                   </ul>
                 </div>
                 
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4 text-apple-title">Pro Plans</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4 text-apple-title">Pro Features</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-gray-300 text-apple-body">Everything in Free plan</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                       <span className="text-gray-300 text-apple-body">Embeddable players for any website</span>
                     </li>
                     <li className="flex items-start">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                       <span className="text-gray-300 text-apple-body">Custom player styling and branding</span>
                     </li>
                     <li className="flex items-start">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                       <span className="text-gray-300 text-apple-body">Advanced analytics and insights</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-300 text-apple-body">Priority customer support</span>
                     </li>
                   </ul>
                 </div>
@@ -382,6 +359,10 @@ export default function PricingPage() {
                 {
                   question: "What audio formats do you support?",
                   answer: "We support all major audio formats including MP3, WAV, FLAC, OGG, and more. Our system automatically optimizes files for web playback."
+                },
+                {
+                  question: "Can I use ACE without paying?",
+                  answer: "ACE is designed specifically for embeddable audio players. Both our plans include unlimited audio hosting and all core features - the only difference is the billing frequency."
                 }
               ].map((faq, index) => (
                 <motion.div
