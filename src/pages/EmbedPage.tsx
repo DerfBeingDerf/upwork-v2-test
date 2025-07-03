@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Music } from "lucide-react";
+import { Music, ExternalLink, CreditCard } from "lucide-react";
 import WaveformPlayer from "../components/audio/WaveformPlayer";
 import LoadingSpinner from "../components/layout/LoadingSpinner";
 import { getPublicCollection } from "../lib/api";
@@ -14,22 +14,18 @@ export default function EmbedPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const [hasEmbedAccess, setHasEmbedAccess] = useState(false);
 
   useEffect(() => {
     const fetchPublicCollection = async () => {
       if (!collectionId) return;
       try {
         setIsLoading(true);
-        const { collection, tracks } = await getPublicCollection(collectionId);
+        const { collection, tracks, hasEmbedAccess } = await getPublicCollection(collectionId);
         setCollection(collection);
         setTracks(tracks);
+        setHasEmbedAccess(hasEmbedAccess);
+        
       } catch (err) {
         setError("This collection is not available.");
         console.error(err);
@@ -61,6 +57,40 @@ export default function EmbedPage() {
           <p className="text-gray-500 text-sm">
             This collection may be private or no longer exists.
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show deactivation message if subscription is not active
+  if (!hasEmbedAccess) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="text-center max-w-md mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CreditCard size={32} className="text-orange-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-3">
+              Collection Deactivated
+            </h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              This embedded audio collection requires an active subscription to display. 
+              The owner needs to upgrade their plan to reactivate embeddable players.
+            </p>
+            <a
+              href={`${window.location.origin}/pricing`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              <ExternalLink size={18} className="mr-2" />
+              Upgrade to Reactivate
+            </a>
+            <p className="text-xs text-gray-500 mt-4">
+              Powered by ACE Audio Platform
+            </p>
+          </div>
         </div>
       </div>
     );
