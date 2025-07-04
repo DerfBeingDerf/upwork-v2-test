@@ -22,18 +22,20 @@ export default function EmbedPage() {
       if (!collectionId) return;
       try {
         setIsLoading(true);
+        console.log('🎵 Embed page: Fetching collection data for ID:', collectionId);
+        
         const { collection, tracks, embedAccessState } = await getPublicCollection(collectionId);
         
-        console.log('Embed page - Collection:', collection.title);
-        console.log('Embed page - Embed access state:', embedAccessState);
-        console.log('Embed page - Tracks count:', tracks.length);
+        console.log('🎵 Embed page - Collection:', collection.title);
+        console.log('🎵 Embed page - Tracks count:', tracks.length);
+        console.log('🎵 Embed page - Embed access state:', embedAccessState);
         
         setCollection(collection);
         setTracks(tracks);
         setEmbedAccessState(embedAccessState);
         
       } catch (err) {
-        console.error('Error fetching collection:', err);
+        console.error('❌ Error fetching collection:', err);
         setError("This collection is not available.");
       } finally {
         setIsLoading(false);
@@ -70,7 +72,7 @@ export default function EmbedPage() {
 
   // Show appropriate message based on embed access state
   if (embedAccessState !== 'active') {
-    console.log('Embed access denied, state:', embedAccessState);
+    console.log('❌ Embed access denied, state:', embedAccessState);
     
     const getErrorContent = () => {
       switch (embedAccessState) {
@@ -134,7 +136,7 @@ export default function EmbedPage() {
     );
   }
 
-  console.log('Embed access granted, showing player');
+  console.log('✅ Embed access granted, showing player');
 
   return (
     <div className="w-screen h-screen sfpro flex justify-center items-center bg-[#FEFEFE] sm:bg-[#f2f2f2]">

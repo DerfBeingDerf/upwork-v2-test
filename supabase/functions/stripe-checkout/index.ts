@@ -74,6 +74,8 @@ Deno.serve(async (req) => {
       return corsResponse({ error: 'User not found' }, 404);
     }
 
+    console.log(`🛒 Creating checkout session for user: ${user.id}, mode: ${mode}`);
+
     const { data: customer, error: getCustomerError } = await supabase
       .from('stripe_customers')
       .select('customer_id')
@@ -83,7 +85,6 @@ Deno.serve(async (req) => {
 
     if (getCustomerError) {
       console.error('Failed to fetch customer information from the database', getCustomerError);
-
       return corsResponse({ error: 'Failed to fetch customer information' }, 500);
     }
 
@@ -93,6 +94,8 @@ Deno.serve(async (req) => {
      * In case we don't have a mapping yet, the customer does not exist and we need to create one.
      */
     if (!customer || !customer.customer_id) {
+      console.log(`🆕 Creating new Stripe customer for user: ${user.id}`);
+      
       const newCustomer = await stripe.customers.create({
         email: user.email,
         metadata: {
@@ -100,7 +103,7 @@ Deno.serve(async (req) => {
         },
       });
 
-      console.log(`Created new Stripe customer ${newCustomer.id} for user ${user.id}`);
+      console.log(`✅ Created new Stripe customer ${newCustomer.id} for user ${user.id}`);
 
       const { error: createCustomerError } = await supabase.from('stripe_customers').insert({
         user_id: user.id,
@@ -122,6 +125,8 @@ Deno.serve(async (req) => {
       }
 
       if (mode === 'subscription') {
+        console.log(`📝 Creating subscription record for customer: ${newCustomer.id}`);
+        
         const { error: createSubscriptionError } = await supabase.from('stripe_subscriptions').insert({
           customer_id: newCustomer.id,
           status: 'not_started',
@@ -142,10 +147,10 @@ Deno.serve(async (req) => {
       }
 
       customerId = newCustomer.id;
-
-      console.log(`Successfully set up new customer ${customerId} with subscription record`);
+      console.log(`✅ Successfully set up new customer ${customerId} with subscription record`);
     } else {
       customerId = customer.customer_id;
+      console.log(`🔄 Using existing customer: ${customerId}`);
 
       if (mode === 'subscription') {
         // Verify subscription exists for existing customer
@@ -157,11 +162,12 @@ Deno.serve(async (req) => {
 
         if (getSubscriptionError) {
           console.error('Failed to fetch subscription information from the database', getSubscriptionError);
-
           return corsResponse({ error: 'Failed to fetch subscription information' }, 500);
         }
 
         if (!subscription) {
+          console.log(`📝 Creating missing subscription record for existing customer: ${customerId}`);
+          
           // Create subscription record for existing customer if missing
           const { error: createSubscriptionError } = await supabase.from('stripe_subscriptions').insert({
             customer_id: customerId,
@@ -170,7 +176,6 @@ Deno.serve(async (req) => {
 
           if (createSubscriptionError) {
             console.error('Failed to create subscription record for existing customer', createSubscriptionError);
-
             return corsResponse({ error: 'Failed to create subscription record for existing customer' }, 500);
           }
         }
@@ -178,7 +183,9 @@ Deno.serve(async (req) => {
     }
 
     // create Checkout Session
-    const session = await stripe.checkout.sessions.create({
+    console.log(`🛒 Creating Stripe checkout session for customer: ${customerId}`);
+    
+    const sessionConfig: any = {
       customer: customerId,
       payment_method_types: ['card'],
       line_items: [
@@ -188,27 +195,31 @@ Deno.serve(async (req) => {
         },
       ],
       mode,
-      // Add trial period for subscription mode
-      ...(mode === 'subscription' && {
-        subscription_data: {
-          trial_period_days: 7,
-          trial_settings: {
-            end_behavior: {
-              missing_payment_method: 'pause',
-            },
-          },
-        },
-        payment_method_collection: 'if_required',
-      }),
       success_url,
       cancel_url,
-    });
+    };
 
-    console.log(`Created checkout session ${session.id} for customer ${customerId}`);
+    // Add trial period for subscription mode
+    if (mode === 'subscription') {
+      console.log(`🆓 Adding 7-day trial to subscription`);
+      sessionConfig.subscription_data = {
+        trial_period_days: 7,
+        trial_settings: {
+          end_behavior: {
+            missing_payment_method: 'pause',
+          },
+        },
+      };
+      sessionConfig.payment_method_collection = 'if_required';
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+
+    console.log(`✅ Created checkout session ${session.id} for customer ${customerId}`);
 
     return corsResponse({ sessionId: session.id, url: session.url });
   } catch (error: any) {
-    console.error(`Checkout error: ${error.message}`);
+    console.error(`❌ Checkout error: ${error.message}`);
     return corsResponse({ error: error.message }, 500);
   }
 });

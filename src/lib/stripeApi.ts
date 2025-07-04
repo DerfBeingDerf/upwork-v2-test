@@ -69,15 +69,29 @@ export const createCheckoutSession = async (
 };
 
 export const getUserSubscription = async (): Promise<StripeSubscription | null> => {
+  console.log('🔍 Fetching user subscription from database...');
+  
   const { data, error } = await supabase
     .from('stripe_user_subscriptions')
     .select('*')
     .maybeSingle();
 
   if (error) {
-    console.error('Error fetching user subscription:', error);
+    console.error('❌ Error fetching user subscription:', error);
     return null;
   }
+
+  console.log('📊 Raw subscription data from DB:', JSON.stringify(data, null, 2));
+  
+  if (!data) {
+    console.log('ℹ️ No subscription data found in database');
+    return null;
+  }
+
+  // Log the specific status for debugging
+  console.log('📋 Subscription status from database:', data.subscription_status);
+  console.log('📅 Current period end:', data.current_period_end);
+  console.log('🆔 Subscription ID:', data.subscription_id);
 
   return data;
 };
@@ -99,31 +113,55 @@ export const getUserOrders = async (): Promise<StripeOrder[]> => {
 export const hasActiveSubscription = (subscription: StripeSubscription | null): boolean => {
   if (!subscription) return false;
   
+  // CRITICAL: Include 'trialing' as an active status
   const activeStatuses = ['trialing', 'active', 'incomplete', 'incomplete_expired'];
-  return activeStatuses.includes(subscription.subscription_status);
+  const isActive = activeStatuses.includes(subscription.subscription_status);
+  
+  console.log('🔍 Checking if subscription is active:');
+  console.log('  Status:', subscription.subscription_status);
+  console.log('  Active statuses:', activeStatuses);
+  console.log('  Result:', isActive);
+  
+  return isActive;
 };
 
 export const hasLifetimeAccess = async (): Promise<boolean> => {
+  console.log('🔍 Checking for lifetime access...');
+  
   const orders = await getUserOrders();
-  return orders.some(order => 
+  const hasLifetime = orders.some(order => 
     order.payment_status === 'paid' && 
     order.order_status === 'completed'
   );
+  
+  console.log('💎 Lifetime access check result:', hasLifetime);
+  console.log('📦 Orders found:', orders.length);
+  
+  return hasLifetime;
 };
 
 export const hasEmbedAccess = async (): Promise<boolean> => {
+  console.log('🔍 Checking embed access...');
+  
   const [subscription, hasLifetime] = await Promise.all([
     getUserSubscription(),
     hasLifetimeAccess()
   ]);
 
-  if (hasLifetime) return true;
+  if (hasLifetime) {
+    console.log('✅ Embed access granted: Lifetime access');
+    return true;
+  }
   
-  if (!subscription) return false;
+  if (!subscription) {
+    console.log('❌ Embed access denied: No subscription');
+    return false;
+  }
   
-  // Check for active subscription states - FIXED: Include 'trialing' status
+  // CRITICAL: Check for active subscription states including 'trialing'
   const activeStates = ['trialing', 'active', 'incomplete', 'incomplete_expired'];
   if (activeStates.includes(subscription.subscription_status)) {
+    console.log('✅ Embed access granted: Active subscription state -', subscription.subscription_status);
     return true;
   }
   
@@ -131,9 +169,11 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
   if ((subscription.subscription_status === 'canceled' || subscription.subscription_status === 'cancelled') && 
       subscription.current_period_end && 
       subscription.current_period_end > Math.floor(Date.now() / 1000)) {
+    console.log('✅ Embed access granted: Canceled but within period');
     return true;
   }
   
+  console.log('❌ Embed access denied: Status -', subscription.subscription_status);
   return false;
 };
 

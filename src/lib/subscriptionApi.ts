@@ -24,48 +24,72 @@ export interface UserSubscription {
 // Get detailed embed access state for a user
 export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessState> => {
   try {
+    console.log('=== EMBED ACCESS CHECK START ===');
     console.log('Checking embed access for user:', userId);
     
     // Check for lifetime access first (one-time payment)
     const hasLifetime = await hasLifetimeAccess();
+    console.log('Has lifetime access:', hasLifetime);
     if (hasLifetime) {
-      console.log('User has lifetime access');
+      console.log('✅ EMBED ACCESS GRANTED: Lifetime access');
       return 'active';
     }
 
     // Check for active subscription
     const subscription = await getUserSubscription();
-    console.log('Subscription data:', subscription);
+    console.log('Raw subscription data:', JSON.stringify(subscription, null, 2));
     
     if (!subscription) {
-      console.log('No subscription found');
+      console.log('❌ No subscription found');
       return 'no_trial';
     }
 
     // Determine state based on subscription status
     const status = subscription.subscription_status;
-    console.log('Subscription status:', status);
+    console.log('Subscription status from DB:', status);
     
-    // Active states that allow embed access
+    // CRITICAL: Active states that allow embed access
     const activeStates = [
-      'trialing',
-      'active', 
-      'incomplete',
-      'incomplete_expired'
+      'trialing',           // Free trial period
+      'active',             // Paid and active
+      'incomplete',         // Payment processing but trial active
+      'incomplete_expired'  // Payment failed but might still be in grace period
     ];
     
+    console.log('Checking if status is in active states:', activeStates);
+    console.log('Status check result:', activeStates.includes(status));
+    
     if (activeStates.includes(status)) {
-      console.log('Subscription is in active state:', status);
+      // Additional check for incomplete states - ensure we're still within valid period
+      if (status === 'incomplete' || status === 'incomplete_expired') {
+        const now = Math.floor(Date.now() / 1000);
+        const periodEnd = subscription.current_period_end;
+        console.log('Incomplete status check - Now:', now, 'Period end:', periodEnd);
+        
+        if (periodEnd && periodEnd > now) {
+          console.log('✅ EMBED ACCESS GRANTED: Incomplete but within period');
+          return 'active';
+        } else {
+          console.log('❌ EMBED ACCESS DENIED: Incomplete and period expired');
+          return 'trial_ended';
+        }
+      }
+      
+      console.log('✅ EMBED ACCESS GRANTED: Active subscription state');
       return 'active';
     }
     
     // Check if canceled but still within current period
     if (status === 'canceled' || status === 'cancelled') {
-      if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
-        console.log('Canceled but still within current period');
+      const now = Math.floor(Date.now() / 1000);
+      const periodEnd = subscription.current_period_end;
+      console.log('Canceled status check - Now:', now, 'Period end:', periodEnd);
+      
+      if (periodEnd && periodEnd > now) {
+        console.log('✅ EMBED ACCESS GRANTED: Canceled but still within period');
         return 'active';
       } else {
-        console.log('Canceled and period ended');
+        console.log('❌ EMBED ACCESS DENIED: Canceled and period ended');
         return 'trial_ended';
       }
     }
@@ -78,22 +102,24 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
     ];
     
     if (endedStates.includes(status)) {
-      console.log('Subscription in ended state:', status);
+      console.log('❌ EMBED ACCESS DENIED: Subscription in ended state:', status);
       return 'trial_ended';
     }
     
     // Not started state
     if (status === 'not_started') {
-      console.log('Subscription not started');
+      console.log('❌ EMBED ACCESS DENIED: Subscription not started');
       return 'no_trial';
     }
     
     // Default to trial ended for unknown states
-    console.log('Unknown subscription state, defaulting to trial_ended');
+    console.log('❌ EMBED ACCESS DENIED: Unknown subscription state, defaulting to trial_ended');
+    console.log('=== EMBED ACCESS CHECK END ===');
     return 'trial_ended';
     
   } catch (error) {
-    console.error('Error checking embed access state:', error);
+    console.error('❌ ERROR checking embed access state:', error);
+    console.log('=== EMBED ACCESS CHECK END (ERROR) ===');
     return 'error';
   }
 };
@@ -107,6 +133,9 @@ export const hasActiveEmbedAccess = async (userId: string): Promise<boolean> => 
 // Check embed access state for a collection
 export const checkCollectionEmbedAccessState = async (collectionId: string): Promise<EmbedAccessState> => {
   try {
+    console.log('=== COLLECTION EMBED ACCESS CHECK START ===');
+    console.log('Checking embed access for collection:', collectionId);
+    
     // First get the collection owner
     const { data: collection, error: collectionError } = await supabase
       .from('collections')
@@ -115,16 +144,21 @@ export const checkCollectionEmbedAccessState = async (collectionId: string): Pro
       .single();
 
     if (collectionError) {
-      console.error('Error fetching collection:', collectionError);
+      console.error('❌ Error fetching collection:', collectionError);
       return 'error';
     }
 
-    console.log('Checking embed access for collection owner:', collection.user_id);
+    console.log('Collection owner user ID:', collection.user_id);
     
     // Then check the owner's embed access state
-    return await getEmbedAccessState(collection.user_id);
+    const accessState = await getEmbedAccessState(collection.user_id);
+    console.log('Collection owner embed access state:', accessState);
+    console.log('=== COLLECTION EMBED ACCESS CHECK END ===');
+    
+    return accessState;
   } catch (error) {
-    console.error('Error checking collection embed access state:', error);
+    console.error('❌ Error checking collection embed access state:', error);
+    console.log('=== COLLECTION EMBED ACCESS CHECK END (ERROR) ===');
     return 'error';
   }
 };
