@@ -30,10 +30,11 @@ export default function EmbedPage() {
         // Debug logging
         console.log('Embed access state:', embedAccessState);
         console.log('Collection:', collection);
+        console.log('Tracks loaded:', tracks.length);
         
       } catch (err) {
+        console.error('Error loading collection:', err);
         setError("This collection is not available.");
-        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -69,6 +70,8 @@ export default function EmbedPage() {
 
   // Show appropriate message based on embed access state
   if (embedAccessState !== 'active') {
+    console.log('Embed access denied, state:', embedAccessState);
+    
     const getErrorContent = () => {
       switch (embedAccessState) {
         case 'trial_ended':
@@ -101,7 +104,7 @@ export default function EmbedPage() {
     return (
       <div className="w-screen h-screen sfpro flex justify-center items-center bg-[#FEFEFE] sm:bg-[#f2f2f2]">
         <div className="transform scale-[0.4] 2xs:scale-[0.53] xs:scale-[0.6] sm:scale-[0.7] md:scale-[0.85] lg:scale-[1]">
-          <main className="w-[750px] h-[550px] sm:h-[500px] flex items-center justify-center px-8 py-12 sm:shadow-lg rounded-lg bg-[#FEFEFE] overflow-hidden">
+          <main className="w-[750px] h-[550px] sm:h-[500px] flex items-center justify-center px-8 py-12 sm:shadow-lg rounded-lg bg-[#FEFEFE]">
             <div className="text-center w-full h-full flex flex-col justify-center items-center px-8">
               <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-8">
                 <CreditCard size={48} className="text-orange-600" />
@@ -130,6 +133,8 @@ export default function EmbedPage() {
       </div>
     );
   }
+
+  console.log('Rendering embed player with', tracks.length, 'tracks');
 
   return (
     <div className="w-screen h-screen sfpro flex justify-center items-center bg-[#FEFEFE] sm:bg-[#f2f2f2]">

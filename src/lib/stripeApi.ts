@@ -99,7 +99,7 @@ export const getUserOrders = async (): Promise<StripeOrder[]> => {
 export const hasActiveSubscription = (subscription: StripeSubscription | null): boolean => {
   if (!subscription) return false;
   
-  const activeStatuses = ['trialing', 'active', 'past_due'];
+  const activeStatuses = ['trialing', 'active', 'incomplete', 'incomplete_expired'];
   return activeStatuses.includes(subscription.subscription_status);
 };
 
@@ -123,9 +123,16 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
   // Check for active subscription or trial
   if (!subscription) return false;
   
-  // Active statuses that allow embed access
-  const embedActiveStatuses = ['trialing', 'active'];
+  // Active statuses that allow embed access (including incomplete trial states)
+  const embedActiveStatuses = ['trialing', 'active', 'incomplete', 'incomplete_expired'];
   if (embedActiveStatuses.includes(subscription.subscription_status)) {
+    // For incomplete states, check if we're still within trial period
+    if (['incomplete', 'incomplete_expired'].includes(subscription.subscription_status)) {
+      if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
+        return true;
+      }
+      return false;
+    }
     return true;
   }
   
@@ -136,6 +143,7 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
   
   return false;
 };
+
 export const cancelSubscription = async (): Promise<void> => {
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
   

@@ -27,35 +27,59 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
     // Check for lifetime access first (one-time payment)
     const hasLifetime = await hasLifetimeAccess();
     if (hasLifetime) {
+      console.log('User has lifetime access');
       return 'active';
     }
 
     // Check for active subscription
     const subscription = await getUserSubscription();
+    console.log('Subscription data:', subscription);
+    
     if (!subscription) {
+      console.log('No subscription found');
       return 'no_trial';
     }
 
     // Determine state based on subscription status
+    console.log('Subscription status:', subscription.subscription_status);
+    
     switch (subscription.subscription_status) {
       case 'trialing':
+        console.log('User is in trial period');
+        return 'active';
       case 'active':
+        console.log('User has active subscription');
         return 'active';
       case 'paused':
+        console.log('Subscription is paused (trial ended)');
         return 'trial_ended';
       case 'not_started':
+        console.log('Subscription not started');
         return 'no_trial';
       case 'canceled':
       case 'cancelled':
         // Check if still within the current period
         if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
+          console.log('Subscription canceled but still within period');
           return 'active';
         }
+        console.log('Subscription canceled and period ended');
         return 'trial_ended';
       case 'past_due':
       case 'unpaid':
+        console.log('Subscription past due or unpaid');
+        return 'trial_ended';
+      case 'incomplete':
+      case 'incomplete_expired':
+        // These are trial states where payment setup is incomplete but trial is active
+        console.log('Subscription incomplete but trial may be active');
+        // Check if we're still within trial period
+        if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
+          return 'active';
+        }
         return 'trial_ended';
       default:
+        console.log('Unknown subscription status:', subscription.subscription_status);
         return 'trial_ended';
     }
   } catch (error) {
@@ -85,6 +109,8 @@ export const checkCollectionEmbedAccessState = async (collectionId: string): Pro
       return 'error';
     }
 
+    console.log('Checking embed access for collection owner:', collection.user_id);
+    
     // Then check the owner's embed access state
     return await getEmbedAccessState(collection.user_id);
   } catch (error) {
