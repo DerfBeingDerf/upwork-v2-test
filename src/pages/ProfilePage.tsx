@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, CreditCard, Calendar, Crown, Zap, LogOut, ArrowLeft, ExternalLink, AlertTriangle, Receipt, X } from 'lucide-react';
+import { User, Mail, CreditCard, Calendar, Crown, Zap, LogOut, ArrowLeft, ExternalLink, AlertTriangle, Receipt, X, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { getUserSubscription, getUserOrders, hasLifetimeAccess, cancelSubscription, createCustomerPortalSession } from '../lib/stripeApi';
+import { supabase } from '../lib/supabase';
 import type { StripeSubscription } from '../lib/stripeApi';
 
 export default function ProfilePage() {
@@ -16,6 +17,9 @@ export default function ProfilePage() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
   const [isLoadingPortal, setIsLoadingPortal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
   useEffect(() => {
     if (!user) {
@@ -79,6 +83,34 @@ export default function ProfilePage() {
       // You could show an error toast here
     } finally {
       setIsLoadingPortal(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user || deleteConfirmText !== 'DELETE') return;
+
+    try {
+      setIsDeleting(true);
+      
+      // Call the delete account function
+      const { error } = await supabase.functions.invoke('delete-account', {
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Sign out the user
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      // You could show an error toast here
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -499,6 +531,16 @@ export default function ProfilePage() {
               >
                 <X size={20} />
               </button>
+              
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="w-full text-left p-3 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition-colors border border-red-500/20"
+              >
+                <div className="flex items-center">
+                  <Trash2 size={16} className="text-red-400 mr-3" />
+                  <span className="text-red-400 font-medium">Delete Account</span>
+                </div>
+              </button>
             {/* Content */}
             <div className="p-6">
               <div className="mb-6">
@@ -537,6 +579,105 @@ export default function ProfilePage() {
                     </span>
                   ) : (
                     'Cancel Subscription'
+                  )}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Delete Account Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => !isDeleting && setShowDeleteModal(false)}
+          />
+
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="relative modal-apple modal-responsive"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <div className="flex items-center">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-500/20 mr-3">
+                  <Trash2 className="w-5 h-5 text-red-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white text-apple-title">Delete Account</h3>
+              </div>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <div className="mb-6">
+                <p className="text-gray-300 mb-4 text-apple-body">
+                  <strong className="text-red-400">Warning:</strong> This action cannot be undone. Deleting your account will:
+                </p>
+                
+                <ul className="list-disc list-inside text-gray-300 text-sm space-y-2 mb-6 ml-4">
+                  <li>Permanently delete all your audio files and collections</li>
+                  <li>Cancel any active subscriptions</li>
+                  <li>Remove all your data from our servers</li>
+                  <li>Disable all embedded players using your collections</li>
+                  <li>Delete your account from all connected services</li>
+                </ul>
+                
+                <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl mb-6">
+                  <p className="text-red-200 text-sm text-apple-body">
+                    <strong>This action is irreversible.</strong> All your data will be permanently lost and cannot be recovered.
+                  </p>
+                </div>
+              <div className="mb-6">
+                <p className="text-gray-300 text-sm mb-2 text-apple-body">
+                  To confirm deletion, type <strong className="text-red-400">DELETE</strong> below:
+                </p>
+                <input
+                  type="text"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value.toUpperCase())}
+                  placeholder="Type DELETE to confirm"
+                  disabled={isDeleting}
+                  className="input-apple input-responsive disabled:opacity-50"
+                />
+              </div>
+              </div>
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  disabled={isDeleting}
+                  className="btn-apple-secondary btn-responsive disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={deleteConfirmText !== 'DELETE' || isDeleting}
+                  className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-full font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed btn-responsive"
+                >
+                  {isDeleting ? (
+                    <span className="flex items-center justify-center">
+                      <div className="spinner-apple mr-2" />
+                      Deleting Account...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      <Trash2 size={16} className="mr-1" />
+                      Delete Account Permanently
+                    </span>
                   )}
                 </button>
               </div>
