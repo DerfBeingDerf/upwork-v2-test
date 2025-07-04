@@ -199,23 +199,9 @@ export default function PricingPage() {
                           onClick={() => handleGetStarted(plan.name)}
                           className={`w-full py-4 text-lg font-medium transition-all duration-200 rounded-full ${
                             plan.name === 'Pro Lifetime' 
-                              ? 'text-white' 
+                              ? 'text-white bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/25' 
                               : 'btn-apple-primary'
                           }`}
-                          style={plan.name === 'Pro Lifetime' ? {
-                            background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
-                            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)'
-                          } : {}}
-                          onMouseEnter={plan.name === 'Pro Lifetime' ? (e) => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)';
-                            e.currentTarget.style.transform = 'translateY(-1px)';
-                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.3), 0 0 20px rgba(168, 85, 247, 0.15)';
-                          } : undefined}
-                          onMouseLeave={plan.name === 'Pro Lifetime' ? (e) => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)';
-                          } : undefined}
                         >
                           {plan.cta}
                           <ArrowRight className="ml-2 h-4 w-4 inline" />
@@ -433,21 +419,7 @@ export default function PricingPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleGetStarted('Pro Lifetime')}
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-white text-lg transition-all duration-200"
-                style={{
-                  background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
-                  boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.3), 0 0 20px rgba(168, 85, 247, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)';
-                }}
+                className="inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-white text-lg transition-all duration-200 bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/25"
               >
                 <Crown className="mr-2 h-5 w-5" />
                 Buy Lifetime Access
