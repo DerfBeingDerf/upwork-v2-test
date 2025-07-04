@@ -398,7 +398,7 @@ export default function ProfilePage() {
                         <Receipt size={16} className="text-green-500 mr-3" />
                         <div>
                           <p className="text-white font-medium text-sm">
-                            ${(order.amount_total / 100).toFixed(2)} {order.currency.toUpperCase()}
+                            ${(order.amount_total / 100).toFixed(2)} {(order.currency || '').toUpperCase()}
                           </p>
                           <p className="text-xs text-gray-400">
                             {new Date(order.order_date).toLocaleDateString('en-US', {
