@@ -445,6 +445,7 @@ export default function CollectionDetailPage() {
              className="flex items-center justify-center min-h-[60vh] mb-16"
              onDragOver={(e) => {
                e.preventDefault();
+               e.stopPropagation();
                if (isOwner) {
                  const card = e.currentTarget.querySelector('.drag-drop-card');
                  if (card) {
@@ -455,6 +456,7 @@ export default function CollectionDetailPage() {
              }}
              onDragLeave={(e) => {
                e.preventDefault();
+               e.stopPropagation();
                if (isOwner) {
                  const card = e.currentTarget.querySelector('.drag-drop-card');
                  if (card) {
@@ -465,6 +467,7 @@ export default function CollectionDetailPage() {
              }}
              onDrop={(e) => {
                e.preventDefault();
+               e.stopPropagation();
                if (isOwner) {
                  const card = e.currentTarget.querySelector('.drag-drop-card');
                  if (card) {
@@ -479,15 +482,21 @@ export default function CollectionDetailPage() {
                const audioFiles = files.filter(file => file.type.startsWith('audio/'));
                
                if (audioFiles.length > 0) {
-                 // Show the add track interface and populate with dropped files
+                 // Navigate to upload page with the dropped files
+                 // For now, just show the add track interface
                  setShowAddTrack(true);
-                 // You could extend this to automatically process the dropped files
                }
              }}>
           <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 drag-drop-card ${
             isOwner ? 'cursor-pointer border-2 border-dashed border-white/30 hover:border-blue-500/50' : ''
           }`}
-               onClick={() => isOwner && setShowAddTrack(true)}>
+               onClick={(e) => {
+                 e.stopPropagation();
+                 if (isOwner) {
+                   // Only show add track interface on click, not on drag
+                   setShowAddTrack(true);
+                 }
+               }}>
             <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
               <Music size={48} className="text-gray-600" />
             </div>
