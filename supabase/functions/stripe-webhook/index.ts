@@ -82,15 +82,13 @@ async function handleEvent(event: Stripe.Event) {
     }
   }
 
-  // Handle successful trial setup
+  // Handle successful trial setup - CRITICAL: Sync immediately when trial starts
   if (event.type === 'customer.subscription.created') {
     const subscription = stripeData as Stripe.Subscription;
-    if (subscription.status === 'trialing') {
-      console.info(`Trial started for subscription ${subscription.id}`);
-      // Sync the subscription data immediately
-      EdgeRuntime.waitUntil(syncCustomerFromStripe(subscription.customer as string));
-      return;
-    }
+    console.info(`Subscription created: ${subscription.id}, status: ${subscription.status}`);
+    // Always sync when subscription is created, regardless of status
+    EdgeRuntime.waitUntil(syncCustomerFromStripe(subscription.customer as string));
+    return;
   }
 
   // Handle subscription updates (including trial to active transitions)
@@ -98,6 +96,48 @@ async function handleEvent(event: Stripe.Event) {
     const subscription = stripeData as Stripe.Subscription;
     console.info(`Subscription updated: ${subscription.id}, status: ${subscription.status}`);
     EdgeRuntime.waitUntil(syncCustomerFromStripe(subscription.customer as string));
+    return;
+  }
+
+  // Handle checkout session completion - CRITICAL: Sync immediately after checkout
+  if (event.type === 'checkout.session.completed') {
+    const session = stripeData as Stripe.Checkout.Session;
+    console.info(`Checkout session completed: ${session.id}, mode: ${session.mode}`);
+    
+    if (session.mode === 'subscription') {
+      // For subscription mode, sync immediately to capture trial status
+      EdgeRuntime.waitUntil(syncCustomerFromStripe(session.customer as string));
+    } else if (session.mode === 'payment' && session.payment_status === 'paid') {
+      // Handle one-time payment
+      try {
+        const {
+          id: checkout_session_id,
+          payment_intent,
+          amount_subtotal,
+          amount_total,
+          currency,
+        } = session;
+
+        const { error: orderError } = await supabase.from('stripe_orders').insert({
+          checkout_session_id,
+          payment_intent_id: payment_intent,
+          customer_id: session.customer,
+          amount_subtotal,
+          amount_total,
+          currency,
+          payment_status: session.payment_status,
+          status: 'completed',
+        });
+
+        if (orderError) {
+          console.error('Error inserting order:', orderError);
+          return;
+        }
+        console.info(`Successfully processed one-time payment for session: ${checkout_session_id}`);
+      } catch (error) {
+        console.error('Error processing one-time payment:', error);
+      }
+    }
     return;
   }
 
@@ -110,55 +150,12 @@ async function handleEvent(event: Stripe.Event) {
 
   if (!customerId || typeof customerId !== 'string') {
     console.error(`No customer received on event: ${JSON.stringify(event)}`);
-  } else {
-    let isSubscription = true;
-
-    if (event.type === 'checkout.session.completed') {
-      const { mode } = stripeData as Stripe.Checkout.Session;
-
-      isSubscription = mode === 'subscription';
-
-      console.info(`Processing ${isSubscription ? 'subscription' : 'one-time payment'} checkout session`);
-    }
-
-    const { mode, payment_status } = stripeData as Stripe.Checkout.Session;
-
-    if (isSubscription) {
-      console.info(`Starting subscription sync for customer: ${customerId}`);
-      await syncCustomerFromStripe(customerId);
-    } else if (mode === 'payment' && payment_status === 'paid') {
-      try {
-        // Extract the necessary information from the session
-        const {
-          id: checkout_session_id,
-          payment_intent,
-          amount_subtotal,
-          amount_total,
-          currency,
-        } = stripeData as Stripe.Checkout.Session;
-
-        // Insert the order into the stripe_orders table
-        const { error: orderError } = await supabase.from('stripe_orders').insert({
-          checkout_session_id,
-          payment_intent_id: payment_intent,
-          customer_id: customerId,
-          amount_subtotal,
-          amount_total,
-          currency,
-          payment_status,
-          status: 'completed', // assuming we want to mark it as completed since payment is successful
-        });
-
-        if (orderError) {
-          console.error('Error inserting order:', orderError);
-          return;
-        }
-        console.info(`Successfully processed one-time payment for session: ${checkout_session_id}`);
-      } catch (error) {
-        console.error('Error processing one-time payment:', error);
-      }
-    }
+    return;
   }
+
+  // For other events, sync the customer data
+  console.info(`Processing event ${event.type} for customer: ${customerId}`);
+  await syncCustomerFromStripe(customerId);
 }
 
 // based on the excellent https://github.com/t3dotgg/stripe-recommendations
@@ -174,9 +171,8 @@ async function syncCustomerFromStripe(customerId: string) {
       expand: ['data.default_payment_method'],
     });
 
-    // TODO verify if needed
     if (subscriptions.data.length === 0) {
-      console.info(`No active subscriptions found for customer: ${customerId}`);
+      console.info(`No subscriptions found for customer: ${customerId}`);
       const { error: noSubError } = await supabase.from('stripe_subscriptions').upsert(
         {
           customer_id: customerId,
@@ -191,14 +187,17 @@ async function syncCustomerFromStripe(customerId: string) {
         console.error('Error updating subscription status:', noSubError);
         throw new Error('Failed to update subscription status in database');
       }
+      return;
     }
 
     // assumes that a customer can only have a single subscription
     const subscription = subscriptions.data[0];
     
     console.log(`Syncing subscription ${subscription.id} with status: ${subscription.status}`);
+    console.log(`Trial start: ${subscription.trial_start}, Trial end: ${subscription.trial_end}`);
+    console.log(`Current period: ${subscription.current_period_start} - ${subscription.current_period_end}`);
 
-    // store subscription state
+    // store subscription state - CRITICAL: Ensure all trial information is captured
     const { error: subError } = await supabase.from('stripe_subscriptions').upsert(
       {
         customer_id: customerId,
@@ -207,7 +206,7 @@ async function syncCustomerFromStripe(customerId: string) {
         current_period_start: subscription.current_period_start,
         current_period_end: subscription.current_period_end,
         cancel_at_period_end: subscription.cancel_at_period_end,
-        status: subscription.status,
+        status: subscription.status, // This should capture 'trialing' status correctly
         ...(subscription.default_payment_method && typeof subscription.default_payment_method !== 'string'
           ? {
               payment_method_brand: subscription.default_payment_method.card?.brand ?? null,
@@ -225,7 +224,7 @@ async function syncCustomerFromStripe(customerId: string) {
       throw new Error('Failed to sync subscription in database');
     }
     
-    console.info(`Successfully synced subscription for customer: ${customerId}`);
+    console.info(`Successfully synced subscription for customer: ${customerId} with status: ${subscription.status}`);
   } catch (error) {
     console.error(`Failed to sync subscription for customer ${customerId}:`, error);
     throw error;

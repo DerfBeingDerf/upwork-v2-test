@@ -26,14 +26,15 @@ export default function EmbedPage() {
         
         console.log('Embed page - Collection:', collection.title);
         console.log('Embed page - Embed access state:', embedAccessState);
+        console.log('Embed page - Tracks count:', tracks.length);
         
         setCollection(collection);
         setTracks(tracks);
         setEmbedAccessState(embedAccessState);
         
       } catch (err) {
+        console.error('Error fetching collection:', err);
         setError("This collection is not available.");
-        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -135,7 +136,6 @@ export default function EmbedPage() {
 
   console.log('Embed access granted, showing player');
 
-
   return (
     <div className="w-screen h-screen sfpro flex justify-center items-center bg-[#FEFEFE] sm:bg-[#f2f2f2]">
       <div className="transform scale-[0.4] 2xs:scale-[0.53] xs:scale-[0.6] sm:scale-[0.7] md:scale-[0.85] lg:scale-[1] ">
@@ -143,9 +143,9 @@ export default function EmbedPage() {
           {/* Left Section */}
           <div className="w-1/2 flex flex-col gap-5 items-center justify-center">
             <img
-              src={musicImg}
+              src={collection.cover_url || musicImg}
               alt={collection.title}
-              className="w-[350px] h-[350px] rounded-lg"
+              className="w-[350px] h-[350px] rounded-lg object-cover"
             />
             <div className="w-full">
               {currentTrack && (

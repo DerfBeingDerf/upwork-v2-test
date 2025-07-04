@@ -24,6 +24,8 @@ export interface UserSubscription {
 // Get detailed embed access state for a user
 export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessState> => {
   try {
+    console.log('Checking embed access for user:', userId);
+    
     // Check for lifetime access first (one-time payment)
     const hasLifetime = await hasLifetimeAccess();
     if (hasLifetime) {
@@ -53,18 +55,7 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
     ];
     
     if (activeStates.includes(status)) {
-      // For incomplete states, check if we're still within trial period
-      if (status === 'incomplete' || status === 'incomplete_expired') {
-        if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
-          console.log('Within trial period for incomplete subscription');
-          return 'active';
-        } else {
-          console.log('Trial period ended for incomplete subscription');
-          return 'trial_ended';
-        }
-      }
-      
-      console.log('Subscription is active');
+      console.log('Subscription is in active state:', status);
       return 'active';
     }
     

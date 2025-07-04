@@ -121,7 +121,7 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
   
   if (!subscription) return false;
   
-  // Check for active subscription states
+  // Check for active subscription states - FIXED: Include 'trialing' status
   const activeStates = ['trialing', 'active', 'incomplete', 'incomplete_expired'];
   if (activeStates.includes(subscription.subscription_status)) {
     return true;
@@ -136,6 +136,7 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
   
   return false;
 };
+
 export const cancelSubscription = async (): Promise<void> => {
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
   
