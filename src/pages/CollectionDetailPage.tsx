@@ -400,7 +400,7 @@ export default function CollectionDetailPage() {
                }
              }}>
           <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 ${
-            isOwner ? 'cursor-pointer hover:border-blue-500/30 hover:bg-blue-500/5' : ''
+            isOwner ? 'cursor-pointer hover:border-blue-500/30 hover:bg-blue-500/5 border-2 border-dashed border-white/20 hover:border-blue-500/50' : ''
           }`}
                onClick={() => isOwner && setShowAddTrack(true)}>
             <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
