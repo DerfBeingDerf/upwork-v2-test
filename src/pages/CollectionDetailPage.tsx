@@ -375,14 +375,50 @@ export default function CollectionDetailPage() {
 
       {/* Tracks and Player/Embed Layout */}
       {tracks.length === 0 ? (
-        <div className="flex items-center justify-center min-h-[60vh] mb-16">
-          <div className="card-apple p-16 text-center max-w-2xl w-full">
+        <div className="flex items-center justify-center min-h-[60vh] mb-16"
+             onDragOver={(e) => {
+               e.preventDefault();
+               e.currentTarget.classList.add('bg-blue-500/5');
+             }}
+             onDragLeave={(e) => {
+               e.preventDefault();
+               e.currentTarget.classList.remove('bg-blue-500/5');
+             }}
+             onDrop={(e) => {
+               e.preventDefault();
+               e.currentTarget.classList.remove('bg-blue-500/5');
+               
+               if (!isOwner) return;
+               
+               const files = Array.from(e.dataTransfer.files);
+               const audioFiles = files.filter(file => file.type.startsWith('audio/'));
+               
+               if (audioFiles.length > 0) {
+                 // Show the add track interface and populate with dropped files
+                 setShowAddTrack(true);
+                 // You could extend this to automatically process the dropped files
+               }
+             }}>
+          <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 ${
+            isOwner ? 'cursor-pointer hover:border-blue-500/30 hover:bg-blue-500/5' : ''
+          }`}
+               onClick={() => isOwner && setShowAddTrack(true)}>
             <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
               <Music size={48} className="text-gray-600" />
             </div>
             <h3 className="text-3xl font-semibold mb-6 text-white text-apple-title">No tracks yet</h3>
             <p className="text-gray-400 text-apple-body text-lg leading-relaxed">
-              {isOwner ? "Add some tracks to get started with your collection." : "This collection is empty."}
+              {isOwner ? (
+                <>
+                  Drag and drop audio files here or click to add tracks to your collection.
+                  <br />
+                  <span className="text-sm text-gray-500 mt-2 block">
+                    Supports MP3, WAV, FLAC, OGG and more
+                  </span>
+                </>
+              ) : (
+                "This collection is empty."
+              )}
             </p>
           </div>
         </div>
