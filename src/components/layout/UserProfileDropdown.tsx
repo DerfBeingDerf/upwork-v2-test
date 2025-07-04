@@ -41,9 +41,15 @@ export default function UserProfileDropdown({ isOpen, onClose }: UserProfileDrop
   }, [user, isOpen]);
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/login');
-    onClose();
+    try {
+      onClose(); // Close dropdown first
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      // Still navigate to login even if signOut fails
+      navigate('/login');
+    }
   };
 
   const handleProfileClick = () => {

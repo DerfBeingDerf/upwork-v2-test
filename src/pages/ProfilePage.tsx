@@ -25,6 +25,7 @@ export default function ProfilePage() {
 
     const fetchUserData = async () => {
       try {
+        setIsLoading(true);
         const [subscriptionData, lifetimeAccess, ordersData] = await Promise.all([
           getUserSubscription(),
           hasLifetimeAccess(),
@@ -36,6 +37,10 @@ export default function ProfilePage() {
         setOrders(ordersData);
       } catch (error) {
         console.error('Error fetching user data:', error);
+        // Set default values on error to prevent infinite loading
+        setSubscription(null);
+        setHasLifetime(false);
+        setOrders([]);
       } finally {
         setIsLoading(false);
       }
@@ -45,8 +50,14 @@ export default function ProfilePage() {
   }, [user, navigate]);
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/login');
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      // Still navigate to login even if signOut fails
+      navigate('/login');
+    }
   };
 
   const handleCancelSubscription = async () => {
