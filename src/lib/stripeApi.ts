@@ -69,31 +69,51 @@ export const createCheckoutSession = async (
 };
 
 export const getUserSubscription = async (): Promise<StripeSubscription | null> => {
-  const { data, error } = await supabase
-    .from('stripe_user_subscriptions')
-    .select('*')
-    .maybeSingle();
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      return null;
+    }
 
-  if (error) {
-    console.error('Error fetching user subscription:', error);
+    const { data, error } = await supabase
+      .from('stripe_user_subscriptions')
+      .select('*')
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching user subscription:', error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error in getUserSubscription:', error);
     return null;
   }
-
-  return data;
 };
 
 export const getUserOrders = async (): Promise<StripeOrder[]> => {
-  const { data, error } = await supabase
-    .from('stripe_user_orders')
-    .select('*')
-    .order('order_date', { ascending: false });
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      return [];
+    }
 
-  if (error) {
-    console.error('Error fetching user orders:', error);
+    const { data, error } = await supabase
+      .from('stripe_user_orders')
+      .select('*')
+      .order('order_date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching user orders:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in getUserOrders:', error);
     return [];
   }
-
-  return data || [];
 };
 
 export const hasActiveSubscription = (subscription: StripeSubscription | null): boolean => {

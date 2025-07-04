@@ -16,21 +16,48 @@ export const isCurrentUserAdmin = async (): Promise<boolean> => {
       return false;
     }
 
-    const { data, error } = await supabase
-      .rpc('is_admin_user', { user_uuid: user.id });
+    // First check if the RPC function exists and works
+    try {
+      const { data, error } = await supabase
+        .rpc('is_admin_user', { user_uuid: user.id });
 
-    if (error) {
-      console.error('Error checking admin status:', error);
-      return false;
+      if (error) {
+        console.error('Error with RPC function:', error);
+        // Fallback to direct table query
+        return await checkAdminDirectly(user.id);
+      }
+
+      return data || false;
+    } catch (rpcError) {
+      console.error('RPC function not available, using direct query:', rpcError);
+      return await checkAdminDirectly(user.id);
     }
-
-    return data || false;
   } catch (error) {
     console.error('Error checking admin status:', error);
     return false;
   }
 };
 
+// Fallback function to check admin status directly
+const checkAdminDirectly = async (userId: string): Promise<boolean> => {
+  try {
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error checking admin status directly:', error);
+      return false;
+    }
+
+    return !!data;
+  } catch (error) {
+    console.error('Error in direct admin check:', error);
+    return false;
+  }
+};
 // Get admin user details (only works if current user is admin)
 export const getAdminUserDetails = async (): Promise<AdminUser | null> => {
   try {

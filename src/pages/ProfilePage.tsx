@@ -26,6 +26,10 @@ export default function ProfilePage() {
     const fetchUserData = async () => {
       try {
         setIsLoading(true);
+        setSubscription(null);
+        setHasLifetime(false);
+        setOrders([]);
+        
         const [subscriptionData, lifetimeAccess, ordersData] = await Promise.all([
           getUserSubscription(),
           hasLifetimeAccess(),

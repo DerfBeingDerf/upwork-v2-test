@@ -19,10 +19,14 @@ export default function UserProfileDropdown({ isOpen, onClose }: UserProfileDrop
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!user || !isOpen) return;
+    if (!user || !isOpen) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchSubscriptionData = async () => {
       try {
+        setIsLoading(true);
         const [subscriptionData, lifetimeAccess] = await Promise.all([
           getUserSubscription(),
           hasLifetimeAccess()
@@ -32,6 +36,8 @@ export default function UserProfileDropdown({ isOpen, onClose }: UserProfileDrop
         setHasLifetime(lifetimeAccess);
       } catch (error) {
         console.error('Error fetching subscription data:', error);
+        setSubscription(null);
+        setHasLifetime(false);
       } finally {
         setIsLoading(false);
       }
