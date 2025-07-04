@@ -42,6 +42,9 @@ export default function CollectionDetailPage() {
 
   // Privacy toggle state
   const [isUpdatingPrivacy, setIsUpdatingPrivacy] = useState(false);
+  
+  // Aura animation state
+  const [showAura, setShowAura] = useState(false);
 
   const scrollToEmptyCard = () => {
     if (emptyCardRef.current) {
@@ -89,6 +92,10 @@ export default function CollectionDetailPage() {
       }
       
       requestAnimationFrame(animation);
+      
+      // Trigger the aura animation
+      setShowAura(true);
+      setTimeout(() => setShowAura(false), 3000); // Remove aura after 3 seconds
     }
   };
 
@@ -440,9 +447,9 @@ export default function CollectionDetailPage() {
 
       {/* Tracks and Player/Embed Layout */}
       {tracks.length === 0 ? (
-        <div 
+        <div
              ref={emptyCardRef}
-             className="flex items-center justify-center min-h-[60vh] mb-16"
+             className="flex items-center justify-center min-h-[60vh] mb-16 relative"
              onDragOver={(e) => {
                e.preventDefault();
                if (isOwner) {
@@ -484,9 +491,39 @@ export default function CollectionDetailPage() {
                  // You could extend this to automatically process the dropped files
                }
              }}>
+          {/* Rotating Glowing Aura */}
+          {showAura && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div 
+                className="absolute w-[120%] h-[120%] rounded-3xl opacity-30"
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent, rgba(59, 130, 246, 0.6), rgba(147, 51, 234, 0.6), rgba(59, 130, 246, 0.6), transparent)',
+                  animation: 'spin 2s linear infinite',
+                  filter: 'blur(8px)'
+                }}
+              />
+              <div 
+                className="absolute w-[110%] h-[110%] rounded-3xl opacity-40"
+                style={{
+                  background: 'conic-gradient(from 180deg, transparent, rgba(147, 51, 234, 0.4), rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4), transparent)',
+                  animation: 'spin 1.5s linear infinite reverse',
+                  filter: 'blur(6px)'
+                }}
+              />
+              <div 
+                className="absolute w-[105%] h-[105%] rounded-3xl opacity-50"
+                style={{
+                  background: 'conic-gradient(from 90deg, transparent, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.3), rgba(59, 130, 246, 0.3), transparent)',
+                  animation: 'spin 1s linear infinite',
+                  filter: 'blur(4px)'
+                }}
+              />
+            </div>
+          )}
+          
           <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 drag-drop-card ${
             isOwner ? 'cursor-pointer border-2 border-dashed border-white/30 hover:border-blue-500/50' : ''
-          }`}
+          } ${showAura ? 'relative z-10' : ''}`}
                onClick={() => isOwner && setShowAddTrack(true)}>
             <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
               <Music size={48} className="text-gray-600" />
