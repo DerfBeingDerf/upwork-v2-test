@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Music, User, LogOut, Home, Library, Upload, DollarSign } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
+import SubscriptionStatus from '../subscription/SubscriptionStatus';
 import aceLogo from '../../assets/ACE Logo v1.png';
 
 export default function Navbar() {
@@ -10,6 +11,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [showSubscriptionStatus, setShowSubscriptionStatus] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,9 +110,28 @@ export default function Navbar() {
             <div className="flex items-center space-x-4">
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <span className="hidden sm:inline text-sm text-gray-400">
-                    {user.email?.split('@')[0]}
-                  </span>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowSubscriptionStatus(!showSubscriptionStatus)}
+                      className="hidden sm:inline text-sm text-gray-400 hover:text-white transition-colors duration-200"
+                    >
+                      {user.email?.split('@')[0]}
+                    </button>
+                    
+                    {/* Subscription Status Dropdown */}
+                    {showSubscriptionStatus && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-10"
+                          onClick={() => setShowSubscriptionStatus(false)}
+                        />
+                        <div className="absolute right-0 top-8 z-20 w-80">
+                          <SubscriptionStatus />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  
                   <button 
                     onClick={handleSignOut}
                     className="text-gray-400 hover:text-white transition-colors duration-200"

@@ -1,13 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Zap, Crown, Sparkles, ArrowRight, Music, Upload, Globe, Calendar } from 'lucide-react';
+import { Check, Zap, Crown, Sparkles, ArrowRight, Music, Upload, Globe, Calendar, Loader2 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { createCheckoutSession } from '../lib/stripeApi';
+import { stripeProducts } from '../stripe-config';
 
 export default function PricingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
@@ -36,7 +39,8 @@ export default function PricingPage() {
       popular: true,
       gradient: 'from-orange-500/10 to-orange-600/5',
       highlight: true,
-      badge: '7-Day Free Trial'
+      badge: '7-Day Free Trial',
+      stripeProduct: stripeProducts.find(p => p.name === 'Pro Monthly')!
     },
     {
       name: 'Pro Lifetime',
@@ -58,7 +62,8 @@ export default function PricingPage() {
       popular: false,
       gradient: 'from-purple-500/10 to-purple-600/5',
       highlight: false,
-      badge: 'Best Value'
+      badge: 'Best Value',
+      stripeProduct: stripeProducts.find(p => p.name === 'Pro Lifetime')!
     }
   ];
 
@@ -80,13 +85,38 @@ export default function PricingPage() {
     }
   ];
 
-  const handleGetStarted = (planName: string) => {
+  const handleGetStarted = async (plan: typeof plans[0]) => {
     if (!user) {
       navigate('/register');
-    } else {
-      // For now, redirect to upload page
-      // In a real app, this would handle subscription logic
-      navigate('/upload');
+      return;
+    }
+
+    if (!plan.stripeProduct) {
+      console.error('Stripe product not found for plan:', plan.name);
+      return;
+    }
+
+    try {
+      setLoadingPlan(plan.name);
+
+      const successUrl = `${window.location.origin}/success`;
+      const cancelUrl = `${window.location.origin}/pricing`;
+
+      const { url } = await createCheckoutSession({
+        priceId: plan.stripeProduct.priceId,
+        successUrl,
+        cancelUrl,
+        mode: plan.stripeProduct.mode
+      });
+
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      // You could show an error toast here
+    } finally {
+      setLoadingPlan(null);
     }
   };
 
@@ -196,15 +226,25 @@ export default function PricingPage() {
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          onClick={() => handleGetStarted(plan.name)}
+                          onClick={() => handleGetStarted(plan)}
+                          disabled={loadingPlan === plan.name}
                           className={`btn-apple-primary w-full text-lg ${
                             plan.name === 'Pro Lifetime' 
                               ? 'btn-purple-gradient' 
                               : ''
-                          }`}
+                          } ${loadingPlan === plan.name ? 'opacity-75 cursor-not-allowed' : ''}`}
                         >
-                          {plan.cta}
-                          <ArrowRight className="ml-2 h-4 w-4 inline" />
+                          {loadingPlan === plan.name ? (
+                            <span className="flex items-center justify-center">
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Processing...
+                            </span>
+                          ) : (
+                            <>
+                              {plan.cta}
+                              <ArrowRight className="ml-2 h-4 w-4 inline" />
+                            </>
+                          )}
                         </motion.button>
                       </div>
                     </div>
@@ -407,22 +447,42 @@ export default function PricingPage() {
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleGetStarted('Pro Monthly')}
-                className="btn-apple-primary px-8 py-3 text-lg"
+                onClick={() => handleGetStarted(plans[0])}
+                disabled={loadingPlan === 'Pro Monthly'}
+                className={`btn-apple-primary px-8 py-3 text-lg ${loadingPlan === 'Pro Monthly' ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
-                <Calendar className="mr-2 h-5 w-5" />
-                Start 7-Day Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
+                {loadingPlan === 'Pro Monthly' ? (
+                  <span className="flex items-center justify-center">
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Processing...
+                  </span>
+                ) : (
+                  <>
+                    <Calendar className="mr-2 h-5 w-5" />
+                    Start 7-Day Free Trial
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </>
+                )}
               </motion.button>
               
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleGetStarted('Pro Lifetime')}
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-white text-lg transition-all duration-200 bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/25"
+                onClick={() => handleGetStarted(plans[1])}
+                disabled={loadingPlan === 'Pro Lifetime'}
+                className={`inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-white text-lg transition-all duration-200 bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/25 ${loadingPlan === 'Pro Lifetime' ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
-                <Crown className="mr-2 h-5 w-5" />
-                Buy Lifetime Access
+                {loadingPlan === 'Pro Lifetime' ? (
+                  <span className="flex items-center justify-center">
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Processing...
+                  </span>
+                ) : (
+                  <>
+                    <Crown className="mr-2 h-5 w-5" />
+                    Buy Lifetime Access
+                  </>
+                )}
               </motion.button>
             </div>
           </motion.div>
