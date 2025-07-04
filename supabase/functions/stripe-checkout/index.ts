@@ -188,6 +188,12 @@ Deno.serve(async (req) => {
         },
       ],
       mode,
+      // Add trial period for subscription mode
+      ...(mode === 'subscription' && {
+        subscription_data: {
+          trial_period_days: 7,
+        },
+      }),
       success_url,
       cancel_url,
     });
