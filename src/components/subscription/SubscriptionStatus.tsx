@@ -50,6 +50,8 @@ export default function SubscriptionStatus() {
         return 'text-green-500';
       case 'trialing':
         return 'text-blue-500';
+      case 'paused':
+        return 'text-orange-500';
       case 'past_due':
         return 'text-yellow-500';
       case 'canceled':
@@ -66,6 +68,8 @@ export default function SubscriptionStatus() {
         return 'Active';
       case 'trialing':
         return 'Trial';
+      case 'paused':
+        return 'Trial Ended';
       case 'past_due':
         return 'Past Due';
       case 'canceled':
@@ -155,11 +159,22 @@ export default function SubscriptionStatus() {
                 {getStatusText(subscription.subscription_status)}
               </span>
             </p>
+            {subscription.subscription_status === 'paused' && (
+              <p className="text-xs text-orange-400 mt-1">
+                Trial ended - Reactivate to continue
+              </p>
+            )}
           </div>
         </div>
         <div className="text-right">
-          <div className={`text-sm font-medium ${isActive ? 'text-orange-400' : 'text-gray-400'}`}>
-            {isActive ? 'Active' : 'Inactive'}
+          <div className={`text-sm font-medium ${
+            isActive ? 'text-orange-400' : 
+            subscription.subscription_status === 'paused' ? 'text-orange-400' : 
+            'text-gray-400'
+          }`}>
+            {isActive ? 'Active' : 
+             subscription.subscription_status === 'paused' ? 'Trial Ended' : 
+             'Inactive'}
           </div>
           {subscription.current_period_end && (
             <div className="text-xs text-gray-500">
@@ -184,6 +199,21 @@ export default function SubscriptionStatus() {
             <Calendar size={14} className="inline mr-1" />
             Your subscription will end on {subscription.current_period_end && formatDate(subscription.current_period_end)}
           </p>
+        </div>
+      )}
+
+      {subscription.subscription_status === 'paused' && (
+        <div className="mt-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-xl">
+          <p className="text-sm text-orange-400 mb-2">
+            <Calendar size={14} className="inline mr-1" />
+            Your trial has ended. Reactivate to continue using embeddable players.
+          </p>
+          <a 
+            href="/pricing" 
+            className="text-xs text-orange-300 hover:text-orange-200 underline"
+          >
+            Reactivate subscription →
+          </a>
         </div>
       )}
     </motion.div>

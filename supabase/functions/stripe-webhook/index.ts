@@ -64,6 +64,24 @@ async function handleEvent(event: Stripe.Event) {
     return;
   }
 
+  // Handle trial ending - pause subscription instead of charging
+  if (event.type === 'invoice.payment_failed') {
+    const invoice = stripeData as Stripe.Invoice;
+    if (invoice.billing_reason === 'subscription_cycle' && invoice.subscription) {
+      try {
+        // Pause the subscription when trial ends and payment fails
+        await stripe.subscriptions.update(invoice.subscription as string, {
+          pause_collection: {
+            behavior: 'void',
+          },
+        });
+        console.info(`Paused subscription ${invoice.subscription} after trial ended`);
+      } catch (error) {
+        console.error(`Failed to pause subscription ${invoice.subscription}:`, error);
+      }
+    }
+  }
+
   // for one time payments, we only listen for the checkout.session.completed event
   if (event.type === 'payment_intent.succeeded' && event.data.object.invoice === null) {
     return;

@@ -72,11 +72,11 @@ export default function EmbedPage() {
               <CreditCard size={32} className="text-orange-600" />
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              Collection Deactivated
+              Trial Ended - Reactivate to Continue
             </h3>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              This embedded audio collection requires an active subscription to display. 
-              The owner needs to upgrade their plan to reactivate embeddable players.
+              Your 7-day free trial has ended. To continue using embeddable audio players, 
+              please reactivate your subscription or upgrade to lifetime access.
             </p>
             <a
               href={`${window.location.origin}/pricing`}
@@ -85,7 +85,7 @@ export default function EmbedPage() {
               className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <ExternalLink size={18} className="mr-2" />
-              Upgrade to Reactivate
+              Reactivate Subscription
             </a>
             <p className="text-xs text-gray-500 mt-4">
               Powered by ACE Audio Platform

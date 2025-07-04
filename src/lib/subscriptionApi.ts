@@ -30,6 +30,8 @@ export const hasActiveEmbedAccess = async (userId: string): Promise<boolean> => 
       return false;
     }
 
+    // Only allow access for trialing and active subscriptions
+    // Paused subscriptions (after trial ends) should not have access
     const activeStatuses = ['trialing', 'active'];
     return activeStatuses.includes(subscription.subscription_status);
   } catch (error) {
