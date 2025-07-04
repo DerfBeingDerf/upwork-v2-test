@@ -21,7 +21,7 @@ export default function PricingPage() {
   const plans = [
     {
       name: 'Pro Monthly',
-      price: '$5',
+      price: '$4.99',
       period: 'per month',
       description: 'Unlock embeddable players with flexible monthly billing',
       icon: <Zap className="h-6 w-6 text-orange-500 icon-glow-orange" />,
@@ -44,7 +44,7 @@ export default function PricingPage() {
     },
     {
       name: 'Pro Lifetime',
-      price: '$50',
+      price: '$49.99',
       period: 'one-time payment',
       description: 'Get embeddable players forever with a single payment',
       icon: <Crown className="h-6 w-6 text-purple-500" />,
@@ -385,7 +385,7 @@ export default function PricingPage() {
               {[
                 {
                   question: "What happens after my free trial ends?",
-                  answer: "After your 7-day free trial, you'll be charged $5/month to continue using embeddable players. If you don't upgrade, your embedded players will show a deactivation message with a link to upgrade."
+                  answer: "After your 7-day free trial, you'll be charged $4.99/month to continue using embeddable players. If you don't upgrade, your embedded players will show a deactivation message with a link to upgrade."
                 },
                 {
                   question: "Can I switch between monthly and lifetime plans?",
@@ -397,7 +397,7 @@ export default function PricingPage() {
                 },
                 {
                   question: "Is the lifetime plan really forever?",
-                  answer: "Yes! The $50 lifetime plan gives you permanent access to embeddable players with no recurring fees. You'll also receive all future feature updates."
+                  answer: "Yes! The $49.99 lifetime plan gives you permanent access to embeddable players with no recurring fees. You'll also receive all future feature updates."
                 },
                 {
                   question: "What audio formats do you support?",
