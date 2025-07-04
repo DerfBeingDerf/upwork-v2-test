@@ -149,7 +149,6 @@ export default function Navbar() {
                   <button 
                     onClick={handleSignOut}
                     className="hidden sm:block text-gray-400 hover:text-white transition-colors duration-200"
-                    title="Sign Out"
                   >
                     <LogOut size={18} />
                   </button>
@@ -158,7 +157,6 @@ export default function Navbar() {
                   <button 
                     onClick={handleSignOut}
                     className="sm:hidden text-gray-400 hover:text-white transition-colors duration-200"
-                    title="Sign Out"
                   >
                     <LogOut size={18} />
                   </button>

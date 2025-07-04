@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Zap, Calendar, CreditCard, Shield } from 'lucide-react';
+import { Crown, Zap, Calendar, CreditCard } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
 import { getUserSubscription, getUserOrders, hasLifetimeAccess } from '../../lib/stripeApi';
 import type { StripeSubscription } from '../../lib/stripeApi';
 
 export default function SubscriptionStatus() {
-  const { isAdmin } = useAuth();
   const [subscription, setSubscription] = useState<StripeSubscription | null>(null);
   const [hasLifetime, setHasLifetime] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,32 +82,6 @@ export default function SubscriptionStatus() {
         return status.charAt(0).toUpperCase() + status.slice(1);
     }
   };
-
-  if (isAdmin) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="card-apple-subtle p-6"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="h-10 w-10 rounded-xl bg-blue-500/20 flex items-center justify-center mr-3 border border-blue-500/30">
-              <Shield size={20} className="text-blue-500" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-white text-apple-title">Admin Access</h3>
-              <p className="text-sm text-gray-400 text-apple-body">Full platform access with all features</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-sm font-medium text-blue-400">Admin</div>
-            <div className="text-xs text-gray-500">Unlimited access</div>
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
 
   if (hasLifetime) {
     return (

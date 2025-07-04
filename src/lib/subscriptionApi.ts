@@ -1,6 +1,5 @@
 import { supabase } from './supabase';
 import { getUserSubscription, hasLifetimeAccess } from './stripeApi';
-import { isUserAdmin } from './adminApi';
 
 export type PlanType = 'free' | 'pro_monthly' | 'pro_lifetime';
 export type SubscriptionStatus = 'active' | 'trial' | 'expired' | 'cancelled';
@@ -25,12 +24,6 @@ export interface UserSubscription {
 // Get detailed embed access state for a user
 export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessState> => {
   try {
-    // Check if user is admin first - admins have access to everything
-    const adminStatus = await isUserAdmin(userId);
-    if (adminStatus) {
-      return 'active';
-    }
-
     // Check for lifetime access first (one-time payment)
     const hasLifetime = await hasLifetimeAccess();
     if (hasLifetime) {
@@ -63,12 +56,6 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
 
 // Check if user has active embed access (backward compatibility)
 export const hasActiveEmbedAccess = async (userId: string): Promise<boolean> => {
-  // Check if user is admin first
-  const adminStatus = await isUserAdmin(userId);
-  if (adminStatus) {
-    return true;
-  }
-
   const state = await getEmbedAccessState(userId);
   return state === 'active';
 };

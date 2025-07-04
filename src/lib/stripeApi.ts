@@ -69,51 +69,31 @@ export const createCheckoutSession = async (
 };
 
 export const getUserSubscription = async (): Promise<StripeSubscription | null> => {
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) {
-      return null;
-    }
+  const { data, error } = await supabase
+    .from('stripe_user_subscriptions')
+    .select('*')
+    .maybeSingle();
 
-    const { data, error } = await supabase
-      .from('stripe_user_subscriptions')
-      .select('*')
-      .maybeSingle();
-
-    if (error) {
-      console.error('Error fetching user subscription:', error);
-      return null;
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Error in getUserSubscription:', error);
+  if (error) {
+    console.error('Error fetching user subscription:', error);
     return null;
   }
+
+  return data;
 };
 
 export const getUserOrders = async (): Promise<StripeOrder[]> => {
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) {
-      return [];
-    }
+  const { data, error } = await supabase
+    .from('stripe_user_orders')
+    .select('*')
+    .order('order_date', { ascending: false });
 
-    const { data, error } = await supabase
-      .from('stripe_user_orders')
-      .select('*')
-      .order('order_date', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching user orders:', error);
-      return [];
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error('Error in getUserOrders:', error);
+  if (error) {
+    console.error('Error fetching user orders:', error);
     return [];
   }
+
+  return data || [];
 };
 
 export const hasActiveSubscription = (subscription: StripeSubscription | null): boolean => {
@@ -124,16 +104,11 @@ export const hasActiveSubscription = (subscription: StripeSubscription | null): 
 };
 
 export const hasLifetimeAccess = async (): Promise<boolean> => {
-  try {
-    const orders = await getUserOrders();
-    return orders.some(order => 
-      order.payment_status === 'paid' && 
-      order.order_status === 'completed'
-    );
-  } catch (error) {
-    console.error('Error checking lifetime access:', error);
-    return false;
-  }
+  const orders = await getUserOrders();
+  return orders.some(order => 
+    order.payment_status === 'paid' && 
+    order.order_status === 'completed'
+  );
 };
 
 export const hasEmbedAccess = async (): Promise<boolean> => {
