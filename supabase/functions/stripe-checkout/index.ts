@@ -192,9 +192,13 @@ Deno.serve(async (req) => {
       ...(mode === 'subscription' && {
         subscription_data: {
           trial_period_days: 7,
-          // Don't require payment method during trial
-          payment_behavior: 'allow_incomplete',
+          trial_settings: {
+            end_behavior: {
+              missing_payment_method: 'pause',
+            },
+          },
         },
+        payment_method_collection: 'if_required',
       }),
       success_url,
       cancel_url,

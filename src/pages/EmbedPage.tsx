@@ -23,6 +23,10 @@ export default function EmbedPage() {
       try {
         setIsLoading(true);
         const { collection, tracks, embedAccessState } = await getPublicCollection(collectionId);
+        
+        console.log('Embed page - Collection:', collection.title);
+        console.log('Embed page - Embed access state:', embedAccessState);
+        
         setCollection(collection);
         setTracks(tracks);
         setEmbedAccessState(embedAccessState);
@@ -65,6 +69,8 @@ export default function EmbedPage() {
 
   // Show appropriate message based on embed access state
   if (embedAccessState !== 'active') {
+    console.log('Embed access denied, state:', embedAccessState);
+    
     const getErrorContent = () => {
       switch (embedAccessState) {
         case 'trial_ended':
@@ -126,6 +132,8 @@ export default function EmbedPage() {
       </div>
     );
   }
+
+  console.log('Embed access granted, showing player');
 
 
   return (

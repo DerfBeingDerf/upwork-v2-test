@@ -27,48 +27,80 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
     // Check for lifetime access first (one-time payment)
     const hasLifetime = await hasLifetimeAccess();
     if (hasLifetime) {
+      console.log('User has lifetime access');
       return 'active';
     }
 
     // Check for active subscription
     const subscription = await getUserSubscription();
+    console.log('Subscription data:', subscription);
     
     if (!subscription) {
+      console.log('No subscription found');
       return 'no_trial';
     }
 
     // Determine state based on subscription status
+    const status = subscription.subscription_status;
+    console.log('Subscription status:', status);
     
-    switch (subscription.subscription_status) {
-      case 'trialing':
-        return 'active';
-      case 'active':
-        return 'active';
-      case 'incomplete':
-      case 'incomplete_expired':
-        // These are trial states where payment setup is incomplete but trial is active
-        // Check if we're still within trial period
+    // Active states that allow embed access
+    const activeStates = [
+      'trialing',
+      'active', 
+      'incomplete',
+      'incomplete_expired'
+    ];
+    
+    if (activeStates.includes(status)) {
+      // For incomplete states, check if we're still within trial period
+      if (status === 'incomplete' || status === 'incomplete_expired') {
         if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
+          console.log('Within trial period for incomplete subscription');
           return 'active';
+        } else {
+          console.log('Trial period ended for incomplete subscription');
+          return 'trial_ended';
         }
-        return 'trial_ended';
-      case 'paused':
-        return 'trial_ended';
-      case 'not_started':
-        return 'no_trial';
-      case 'canceled':
-      case 'cancelled':
-        // Check if still within the current period
-        if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
-          return 'active';
-        }
-        return 'trial_ended';
-      case 'past_due':
-      case 'unpaid':
-        return 'trial_ended';
-      default:
-        return 'trial_ended';
+      }
+      
+      console.log('Subscription is active');
+      return 'active';
     }
+    
+    // Check if canceled but still within current period
+    if (status === 'canceled' || status === 'cancelled') {
+      if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
+        console.log('Canceled but still within current period');
+        return 'active';
+      } else {
+        console.log('Canceled and period ended');
+        return 'trial_ended';
+      }
+    }
+    
+    // States that indicate trial ended or subscription issues
+    const endedStates = [
+      'paused',
+      'past_due',
+      'unpaid'
+    ];
+    
+    if (endedStates.includes(status)) {
+      console.log('Subscription in ended state:', status);
+      return 'trial_ended';
+    }
+    
+    // Not started state
+    if (status === 'not_started') {
+      console.log('Subscription not started');
+      return 'no_trial';
+    }
+    
+    // Default to trial ended for unknown states
+    console.log('Unknown subscription state, defaulting to trial_ended');
+    return 'trial_ended';
+    
   } catch (error) {
     console.error('Error checking embed access state:', error);
     return 'error';
@@ -96,6 +128,8 @@ export const checkCollectionEmbedAccessState = async (collectionId: string): Pro
       return 'error';
     }
 
+    console.log('Checking embed access for collection owner:', collection.user_id);
+    
     // Then check the owner's embed access state
     return await getEmbedAccessState(collection.user_id);
   } catch (error) {
