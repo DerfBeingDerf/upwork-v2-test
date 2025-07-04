@@ -375,7 +375,7 @@ export default function CollectionDetailPage() {
                 ? 'border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/25 backdrop-blur-20' 
                 : 'border-white/20 hover:border-blue-500/50 bg-white/5 backdrop-blur-20'
             }` : 'card-apple'
-          } ${isDragging ? 'scale-105' : ''}`}
+          }`}
                onClick={(e) => {
                  e.stopPropagation();
                  if (isOwner && !isUploading) {
@@ -406,7 +406,7 @@ export default function CollectionDetailPage() {
             ) : (
               <>
                 <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
-                  <Music size={48} className={isDragging ? "text-blue-500" : "text-gray-600"} />
+                  <Music size={48} className="text-gray-600" />
                 </div>
                 <h3 className="text-3xl font-semibold mb-6 text-white text-apple-title">No tracks yet</h3>
                 <p className="text-gray-400 text-apple-body text-lg leading-relaxed">
