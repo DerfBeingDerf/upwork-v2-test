@@ -341,7 +341,7 @@ export default function CollectionDetailPage() {
       {/* Tracks and Player/Embed Layout */}
       {tracks.length === 0 ? (
         <div 
-             ref={emptyCardRef}
+             ref={emptyCardRef} 
              className="flex items-center justify-center min-h-[60vh] mb-16"
              onDragOver={(e) => {
                e.preventDefault();
@@ -369,13 +369,13 @@ export default function CollectionDetailPage() {
                  handleFileUpload(files);
                }
              }}>
-          <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 ${
-            isOwner ? `cursor-pointer border-2 border-dashed ${
+          <div className={`p-16 text-center max-w-2xl w-full transition-all duration-300 ${
+            isOwner ? `cursor-pointer border-2 border-dashed rounded-2xl ${
               isDragging 
-                ? 'border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/25' 
-                : 'border-white/30 hover:border-blue-500/50'
-            }` : ''
-          }`}
+                ? 'border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/25 backdrop-blur-20' 
+                : 'border-white/20 hover:border-blue-500/50 bg-white/5 backdrop-blur-20'
+            }` : 'card-apple'
+          } ${isDragging ? 'scale-105' : ''}`}
                onClick={(e) => {
                  e.stopPropagation();
                  if (isOwner && !isUploading) {
@@ -406,7 +406,7 @@ export default function CollectionDetailPage() {
             ) : (
               <>
                 <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
-                  <Music size={48} className={isDragging ? "text-blue-400" : "text-gray-600"} />
+                  <Music size={48} className={isDragging ? "text-blue-500" : "text-gray-600"} />
                 </div>
                 <h3 className="text-3xl font-semibold mb-6 text-white text-apple-title">No tracks yet</h3>
                 <p className="text-gray-400 text-apple-body text-lg leading-relaxed">
