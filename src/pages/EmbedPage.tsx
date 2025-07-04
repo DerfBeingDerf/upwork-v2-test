@@ -4,6 +4,7 @@ import WaveformPlayer from "../components/audio/WaveformPlayer";
 import LoadingSpinner from "../components/layout/LoadingSpinner";
 import { getPublicCollection } from "../lib/api";
 import { CollectionTrack, Collection } from "../types";
+import type { EmbedAccessState } from "../lib/subscriptionApi";
 import musicImg from "./musicImg.png";
 import { useParams } from "react-router-dom";
 
@@ -14,17 +15,17 @@ export default function EmbedPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [hasEmbedAccess, setHasEmbedAccess] = useState(false);
+  const [embedAccessState, setEmbedAccessState] = useState<EmbedAccessState>('error');
 
   useEffect(() => {
     const fetchPublicCollection = async () => {
       if (!collectionId) return;
       try {
         setIsLoading(true);
-        const { collection, tracks, hasEmbedAccess } = await getPublicCollection(collectionId);
+        const { collection, tracks, embedAccessState } = await getPublicCollection(collectionId);
         setCollection(collection);
         setTracks(tracks);
-        setHasEmbedAccess(hasEmbedAccess);
+        setEmbedAccessState(embedAccessState);
         
       } catch (err) {
         setError("This collection is not available.");
@@ -62,8 +63,37 @@ export default function EmbedPage() {
     );
   }
 
-  // Show deactivation message if subscription is not active
-  if (!hasEmbedAccess) {
+  // Show appropriate message based on embed access state
+  if (embedAccessState !== 'active') {
+    const getErrorContent = () => {
+      switch (embedAccessState) {
+        case 'trial_ended':
+          return {
+            title: 'Trial Ended - Reactivate to Continue',
+            description: 'Your 7-day free trial has ended. To continue using embeddable audio players, please reactivate your subscription or upgrade to lifetime access.',
+            buttonText: 'Reactivate Subscription',
+            buttonUrl: `${window.location.origin}/pricing`
+          };
+        case 'no_trial':
+          return {
+            title: 'Start Your Free Trial',
+            description: 'This embedded audio collection requires a subscription to display. The owner needs to start their free 7-day trial or upgrade to access embeddable players.',
+            buttonText: 'Start Free Trial',
+            buttonUrl: `${window.location.origin}/pricing`
+          };
+        case 'error':
+        default:
+          return {
+            title: 'Collection Unavailable',
+            description: 'This embedded audio collection is temporarily unavailable. Please try again later or contact the collection owner.',
+            buttonText: 'Learn More',
+            buttonUrl: `${window.location.origin}/pricing`
+          };
+      }
+    };
+
+    const errorContent = getErrorContent();
+
     return (
       <div className="w-full h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="text-center max-w-md mx-auto">
@@ -72,20 +102,19 @@ export default function EmbedPage() {
               <CreditCard size={32} className="text-orange-600" />
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              Trial Ended - Reactivate to Continue
+              {errorContent.title}
             </h3>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              Your 7-day free trial has ended. To continue using embeddable audio players, 
-              please reactivate your subscription or upgrade to lifetime access.
+              {errorContent.description}
             </p>
             <a
-              href={`${window.location.origin}/pricing`}
+              href={errorContent.buttonUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <ExternalLink size={18} className="mr-2" />
-              Reactivate Subscription
+              {errorContent.buttonText}
             </a>
             <p className="text-xs text-gray-500 mt-4">
               Powered by ACE Audio Platform

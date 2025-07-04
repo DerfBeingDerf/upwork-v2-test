@@ -2,7 +2,8 @@ import { supabase } from './supabase';
 import { AudioFile, Collection, CollectionTrack } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { getAudioMetadata, getAudioDurationFromUrl } from './audioUtils';
-import { checkCollectionEmbedAccess } from './subscriptionApi';
+import { checkCollectionEmbedAccessState } from './subscriptionApi';
+import type { EmbedAccessState } from './subscriptionApi';
 
 // Audio file operations
 export const uploadAudioFile = async (
@@ -464,7 +465,7 @@ export const updateCollectionTrackPositions = async (
 export const getPublicCollection = async (collectionId: string): Promise<{
   collection: Collection;
   tracks: CollectionTrack[];
-  hasEmbedAccess: boolean;
+  embedAccessState: EmbedAccessState;
 }> => {
   // First get the collection
   const { data: collection, error: collectionError } = await supabase
@@ -478,8 +479,8 @@ export const getPublicCollection = async (collectionId: string): Promise<{
     throw new Error(`Error fetching public collection: ${collectionError.message}`);
   }
 
-  // Check if the collection owner has embed access
-  const hasEmbedAccess = await checkCollectionEmbedAccess(collectionId);
+  // Check the collection owner's embed access state
+  const embedAccessState = await checkCollectionEmbedAccessState(collectionId);
 
   // Then get the tracks
   const { data: tracks, error: tracksError } = await supabase
@@ -506,5 +507,5 @@ export const getPublicCollection = async (collectionId: string): Promise<{
     audio_file: updatedAudioFiles[index]
   }));
 
-  return { collection, tracks: updatedTracks, hasEmbedAccess };
+  return { collection, tracks: updatedTracks, embedAccessState };
 };
