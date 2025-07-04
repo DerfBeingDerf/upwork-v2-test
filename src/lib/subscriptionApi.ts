@@ -88,25 +88,3 @@ export const checkCollectionEmbedAccess = async (collectionId: string): Promise<
   const state = await checkCollectionEmbedAccessState(collectionId);
   return state === 'active';
 };
-
-const activeStatuses = ['trialing', 'active'];
-return activeStatuses.includes(subscription.subscription_status);
-try {
-  // First get the collection owner
-  const { data: collection, error: collectionError } = await supabase
-    .from('collections')
-    .select('user_id')
-    .eq('id', collectionId)
-    .single();
-
-  if (collectionError) {
-    console.error('Error fetching collection:', collectionError);
-    return false;
-  }
-
-  // Then check if the owner has embed access
-  return await hasActiveEmbedAccess(collection.user_id);
-} catch (error) {
-  console.error('Error checking collection embed access:', error);
-  return false;
-}
