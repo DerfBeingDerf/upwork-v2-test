@@ -375,28 +375,35 @@ export default function CollectionDetailPage() {
 
       {/* Tracks and Player/Embed Layout */}
       {tracks.length === 0 ? (
-        <div className={`flex items-center justify-center min-h-[60vh] mb-16 transition-all duration-300 ${
-               isOwner ? 'border-2 border-dashed border-white/30 rounded-2xl p-8 hover:border-blue-500/50 hover:bg-blue-500/5' : ''
-             }`}
+        <div className="flex items-center justify-center min-h-[60vh] mb-16"
              onDragOver={(e) => {
                e.preventDefault();
                if (isOwner) {
-                 e.currentTarget.classList.add('border-blue-500');
-                 e.currentTarget.classList.add('bg-blue-500/10');
+                 const card = e.currentTarget.querySelector('.drag-drop-card');
+                 if (card) {
+                   card.classList.add('border-blue-500');
+                   card.classList.add('bg-blue-500/10');
+                 }
                }
              }}
              onDragLeave={(e) => {
                e.preventDefault();
                if (isOwner) {
-                 e.currentTarget.classList.remove('border-blue-500');
-                 e.currentTarget.classList.remove('bg-blue-500/10');
+                 const card = e.currentTarget.querySelector('.drag-drop-card');
+                 if (card) {
+                   card.classList.remove('border-blue-500');
+                   card.classList.remove('bg-blue-500/10');
+                 }
                }
              }}
              onDrop={(e) => {
                e.preventDefault();
                if (isOwner) {
-                 e.currentTarget.classList.remove('border-blue-500');
-                 e.currentTarget.classList.remove('bg-blue-500/10');
+                 const card = e.currentTarget.querySelector('.drag-drop-card');
+                 if (card) {
+                   card.classList.remove('border-blue-500');
+                   card.classList.remove('bg-blue-500/10');
+                 }
                }
                
                if (!isOwner) return;
@@ -410,8 +417,8 @@ export default function CollectionDetailPage() {
                  // You could extend this to automatically process the dropped files
                }
              }}>
-          <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 ${
-            isOwner ? 'cursor-pointer' : ''
+          <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 drag-drop-card ${
+            isOwner ? 'cursor-pointer border-2 border-dashed border-white/30 hover:border-blue-500/50' : ''
           }`}
                onClick={() => isOwner && setShowAddTrack(true)}>
             <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
