@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Music, Plus, ListMusic, Share2, MoreVertical, Settings, Globe, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +18,7 @@ export default function CollectionDetailPage() {
   const { collectionId } = useParams<{ collectionId: string }>();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const emptyCardRef = useRef<HTMLDivElement>(null);
 
   const [collection, setCollection] = useState<Collection | null>(null);
   const [tracks, setTracks] = useState<CollectionTrack[]>([]);
@@ -40,6 +42,16 @@ export default function CollectionDetailPage() {
 
   // Privacy toggle state
   const [isUpdatingPrivacy, setIsUpdatingPrivacy] = useState(false);
+
+  const scrollToEmptyCard = () => {
+    if (emptyCardRef.current) {
+      emptyCardRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
+    }
+  };
 
   const fetchCollectionData = async () => {
     if (!collectionId) return;
@@ -269,21 +281,35 @@ export default function CollectionDetailPage() {
           {/* Actions */}
           <div className="lg:col-span-1 flex justify-end">
             {isOwner && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowAddTrack(!showAddTrack)}
-                className="btn-apple-primary whitespace-nowrap w-full lg:w-auto"
-              >
-                {showAddTrack ? (
-                  "Cancel"
-                ) : (
+              {tracks.length === 0 ? (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={scrollToEmptyCard}
+                  className="btn-apple-primary whitespace-nowrap w-full lg:w-auto"
+                >
                   <span className="flex items-center justify-center">
                     <Plus size={20} className="mr-2" />
                     Add Tracks
                   </span>
-                )}
-              </motion.button>
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowAddTrack(!showAddTrack)}
+                  className="btn-apple-primary whitespace-nowrap w-full lg:w-auto"
+                >
+                  {showAddTrack ? (
+                    "Cancel"
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      <Plus size={20} className="mr-2" />
+                      Add Tracks
+                    </span>
+                  )}
+                </motion.button>
+              )}
             )}
           </div>
         </div>
@@ -375,7 +401,9 @@ export default function CollectionDetailPage() {
 
       {/* Tracks and Player/Embed Layout */}
       {tracks.length === 0 ? (
-        <div className="flex items-center justify-center min-h-[60vh] mb-16"
+        <div 
+             ref={emptyCardRef}
+             className="flex items-center justify-center min-h-[60vh] mb-16"
              onDragOver={(e) => {
                e.preventDefault();
                if (isOwner) {
