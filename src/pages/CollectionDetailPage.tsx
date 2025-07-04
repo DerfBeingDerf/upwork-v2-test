@@ -281,7 +281,7 @@ export default function CollectionDetailPage() {
           {/* Actions */}
           <div className="lg:col-span-1 flex justify-end">
             {isOwner && (
-              {tracks.length === 0 ? (
+              tracks.length === 0 ? (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -309,7 +309,7 @@ export default function CollectionDetailPage() {
                     </span>
                   )}
                 </motion.button>
-              )}
+              )
             )}
           </div>
         </div>
