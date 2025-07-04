@@ -60,11 +60,13 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
     console.log('Status check result:', activeStates.includes(status));
     
     if (activeStates.includes(status)) {
-      // For trialing status, always grant access during trial period
-      if (status === 'trialing') {
+      // For trialing status, check if we're within the trial period
+      if (status === 'trialing' && subscription.current_period_end) {
         const now = Math.floor(Date.now() / 1000);
         const periodEnd = subscription.current_period_end;
         console.log('Trial status check - Now:', now, 'Period end:', periodEnd);
+        console.log('Trial status check - Now (date):', new Date().toISOString());
+        console.log('Trial status check - Period end (date):', new Date(periodEnd * 1000).toISOString());
         
         if (periodEnd && periodEnd > now) {
           console.log('✅ EMBED ACCESS GRANTED: Active trial period');
@@ -75,19 +77,31 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
         }
       }
       
-      // Additional check for incomplete states - ensure we're still within valid period
+      // For other active states, grant access immediately
+      if (status === 'active') {
+        console.log('✅ EMBED ACCESS GRANTED: Active paid subscription');
+        return 'active';
+      }
+      
+      // For incomplete states, check if we're still within valid period
       if (status === 'incomplete' || status === 'incomplete_expired') {
-        const now = Math.floor(Date.now() / 1000);
-        const periodEnd = subscription.current_period_end;
-        console.log('Incomplete status check - Now:', now, 'Period end:', periodEnd);
-        
-        if (periodEnd && periodEnd > now) {
-          console.log('✅ EMBED ACCESS GRANTED: Incomplete but within period');
-          return 'active';
-        } else {
-          console.log('❌ EMBED ACCESS DENIED: Incomplete and period expired');
-          return 'trial_ended';
+        if (subscription.current_period_end) {
+          const now = Math.floor(Date.now() / 1000);
+          const periodEnd = subscription.current_period_end;
+          console.log('Incomplete status check - Now:', now, 'Period end:', periodEnd);
+          
+          if (periodEnd && periodEnd > now) {
+            console.log('✅ EMBED ACCESS GRANTED: Incomplete but within period');
+            return 'active';
+          } else {
+            console.log('❌ EMBED ACCESS DENIED: Incomplete and period expired');
+            return 'trial_ended';
+          }
         }
+        
+        // If no period end, assume it's a new incomplete subscription
+        console.log('✅ EMBED ACCESS GRANTED: New incomplete subscription');
+        return 'active';
       }
       
       console.log('✅ EMBED ACCESS GRANTED: Active subscription state');

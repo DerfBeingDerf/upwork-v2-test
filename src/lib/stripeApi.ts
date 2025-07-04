@@ -161,9 +161,28 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
     return false;
   }
   
+  // Use the detailed embed access state check
+  const userId = subscription.customer_id; // We need to get the user ID somehow
+  // For now, let's use a simpler check here and rely on the main function
+  
   // CRITICAL: Check for active subscription states including 'trialing'
   const activeStates = ['trialing', 'active', 'incomplete', 'incomplete_expired'];
+  
   if (activeStates.includes(subscription.subscription_status)) {
+    // For trialing, check the period
+    if (subscription.subscription_status === 'trialing' && subscription.current_period_end) {
+      const now = Math.floor(Date.now() / 1000);
+      const periodEnd = subscription.current_period_end;
+      
+      if (periodEnd > now) {
+        console.log('✅ Embed access granted: Active trial period');
+        return true;
+      } else {
+        console.log('❌ Embed access denied: Trial period expired');
+        return false;
+      }
+    }
+    
     console.log('✅ Embed access granted: Active subscription state -', subscription.subscription_status);
     return true;
   }
