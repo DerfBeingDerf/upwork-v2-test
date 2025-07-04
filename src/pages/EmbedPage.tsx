@@ -75,6 +75,8 @@ export default function EmbedPage() {
   // Show appropriate message based on embed access state
   if (embedAccessState !== 'active') {
     console.log('❌ Embed access denied, state:', embedAccessState);
+    console.log('🔍 Collection owner user_id:', collection?.user_id);
+    console.log('🔍 Collection is_public:', collection?.is_public);
     
     const getErrorContent = () => {
       switch (embedAccessState) {

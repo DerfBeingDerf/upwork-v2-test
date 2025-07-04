@@ -173,6 +173,7 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
     if (subscription.subscription_status === 'trialing' && subscription.current_period_end) {
       const now = Math.floor(Date.now() / 1000);
       const periodEnd = subscription.current_period_end;
+      console.log('🔍 hasEmbedAccess - Trial check - Now:', now, 'Period end:', periodEnd);
       
       if (periodEnd > now) {
         console.log('✅ Embed access granted: Active trial period');

@@ -68,7 +68,7 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
         console.log('Trial status check - Now (date):', new Date().toISOString());
         console.log('Trial status check - Period end (date):', new Date(periodEnd * 1000).toISOString());
         
-        if (periodEnd && periodEnd > now) {
+        if (periodEnd > now) {
           console.log('✅ EMBED ACCESS GRANTED: Active trial period');
           return 'active';
         } else {
@@ -90,7 +90,7 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
           const periodEnd = subscription.current_period_end;
           console.log('Incomplete status check - Now:', now, 'Period end:', periodEnd);
           
-          if (periodEnd && periodEnd > now) {
+          if (periodEnd > now) {
             console.log('✅ EMBED ACCESS GRANTED: Incomplete but within period');
             return 'active';
           } else {
@@ -104,7 +104,7 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
         return 'active';
       }
       
-      console.log('✅ EMBED ACCESS GRANTED: Active subscription state');
+      console.log('✅ EMBED ACCESS GRANTED: Active subscription state -', status);
       return 'active';
     }
     
