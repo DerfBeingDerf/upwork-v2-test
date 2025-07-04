@@ -415,21 +415,7 @@ export default function PricingPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleGetStarted('Pro Lifetime')}
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full font-medium transition-all duration-200 text-white text-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
-                  boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.3), 0 0 20px rgba(168, 85, 247, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)';
-                }}
+                className="btn-purple-gradient inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-white text-lg"
               >
                 <Crown className="mr-2 h-5 w-5" />
                 Get Lifetime Access
