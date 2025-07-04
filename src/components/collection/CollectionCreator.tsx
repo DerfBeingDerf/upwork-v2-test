@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Loader2, Sparkles, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -10,6 +11,7 @@ type CollectionCreatorProps = {
 
 export default function CollectionCreator({ onCollectionCreated }: CollectionCreatorProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isPublic, setIsPublic] = useState(true);
@@ -34,7 +36,7 @@ export default function CollectionCreator({ onCollectionCreated }: CollectionCre
     setError(null);
     
     try {
-      await createCollection(
+      const newCollection = await createCollection(
         title,
         user.id,
         description || undefined,
@@ -49,6 +51,9 @@ export default function CollectionCreator({ onCollectionCreated }: CollectionCre
       
       // Notify parent component
       onCollectionCreated();
+      
+      // Navigate to the new collection to start adding tracks
+      navigate(`/collection/${newCollection.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create collection.');
     } finally {
