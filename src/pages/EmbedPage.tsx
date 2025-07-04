@@ -29,6 +29,7 @@ export default function EmbedPage() {
         console.log('🎵 Embed page - Collection:', collection.title);
         console.log('🎵 Embed page - Tracks count:', tracks.length);
         console.log('🎵 Embed page - Embed access state:', embedAccessState);
+        console.log('🎵 Embed page - Current timestamp:', Math.floor(Date.now() / 1000));
         
         setCollection(collection);
         setTracks(tracks);

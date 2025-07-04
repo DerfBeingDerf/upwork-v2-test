@@ -91,6 +91,9 @@ export const getUserSubscription = async (): Promise<StripeSubscription | null> 
   // Log the specific status for debugging
   console.log('📋 Subscription status from database:', data.subscription_status);
   console.log('📅 Current period end:', data.current_period_end);
+  console.log('📅 Current period end (date):', data.current_period_end ? new Date(data.current_period_end * 1000).toISOString() : 'null');
+  console.log('📅 Current timestamp:', Math.floor(Date.now() / 1000));
+  console.log('📅 Current timestamp (date):', new Date().toISOString());
   console.log('🆔 Subscription ID:', data.subscription_id);
 
   return data;

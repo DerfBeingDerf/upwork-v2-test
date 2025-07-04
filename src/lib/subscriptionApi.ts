@@ -60,6 +60,21 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
     console.log('Status check result:', activeStates.includes(status));
     
     if (activeStates.includes(status)) {
+      // For trialing status, always grant access during trial period
+      if (status === 'trialing') {
+        const now = Math.floor(Date.now() / 1000);
+        const periodEnd = subscription.current_period_end;
+        console.log('Trial status check - Now:', now, 'Period end:', periodEnd);
+        
+        if (periodEnd && periodEnd > now) {
+          console.log('✅ EMBED ACCESS GRANTED: Active trial period');
+          return 'active';
+        } else {
+          console.log('❌ EMBED ACCESS DENIED: Trial period expired');
+          return 'trial_ended';
+        }
+      }
+      
       // Additional check for incomplete states - ensure we're still within valid period
       if (status === 'incomplete' || status === 'incomplete_expired') {
         const now = Math.floor(Date.now() / 1000);
