@@ -47,7 +47,7 @@ export default function CollectionDetailPage() {
     if (emptyCardRef.current) {
       emptyCardRef.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'start',
+        block: 'center',
         inline: 'nearest'
       });
     }
