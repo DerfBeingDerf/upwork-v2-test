@@ -197,7 +197,25 @@ export default function PricingPage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleGetStarted(plan.name)}
-                          className="btn-apple-primary w-full py-4 text-lg"
+                          className={`w-full py-4 text-lg font-medium transition-all duration-200 rounded-full ${
+                            plan.name === 'Pro Lifetime' 
+                              ? 'text-white' 
+                              : 'btn-apple-primary'
+                          }`}
+                          style={plan.name === 'Pro Lifetime' ? {
+                            background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+                            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)'
+                          } : {}}
+                          onMouseEnter={plan.name === 'Pro Lifetime' ? (e) => {
+                            e.currentTarget.style.background = 'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.3), 0 0 20px rgba(168, 85, 247, 0.15)';
+                          } : undefined}
+                          onMouseLeave={plan.name === 'Pro Lifetime' ? (e) => {
+                            e.currentTarget.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.3), 0 0 15px rgba(168, 85, 247, 0.1)';
+                          } : undefined}
                         >
                           {plan.cta}
                           <ArrowRight className="ml-2 h-4 w-4 inline" />
@@ -432,7 +450,7 @@ export default function PricingPage() {
                 }}
               >
                 <Crown className="mr-2 h-5 w-5" />
-                Get Lifetime Access
+                Buy Lifetime Access
               </motion.button>
             </div>
           </motion.div>
