@@ -493,34 +493,29 @@ export default function CollectionDetailPage() {
              }}>
           {/* Rotating Glowing Aura */}
           {showAura && (
-            <div className="absolute inset-0 pointer-events-none">
-              {/* Outer glow layer */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div 
-                className="absolute inset-0 rounded-3xl"
+                className="absolute w-[120%] h-[120%] rounded-3xl opacity-30"
                 style={{
-                  background: 'radial-gradient(ellipse 120% 100% at 50% 50%, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.1), transparent 70%)',
-                  filter: 'blur(20px)',
-                  animation: 'siriPulse 4s ease-in-out infinite'
+                  background: 'conic-gradient(from 0deg, transparent, rgba(59, 130, 246, 0.6), rgba(147, 51, 234, 0.6), rgba(59, 130, 246, 0.6), transparent)',
+                  animation: 'spin 2s linear infinite',
+                  filter: 'blur(8px)'
                 }}
               />
-              
-              {/* Middle glow layer */}
               <div 
-                className="absolute inset-0 rounded-3xl"
+                className="absolute w-[110%] h-[110%] rounded-3xl opacity-40"
                 style={{
-                  background: 'radial-gradient(ellipse 110% 90% at 30% 70%, rgba(147, 51, 234, 0.2), transparent 60%), radial-gradient(ellipse 100% 80% at 70% 30%, rgba(59, 130, 246, 0.15), transparent 50%)',
-                  filter: 'blur(15px)',
-                  animation: 'siriPulse 3s ease-in-out infinite 0.5s'
+                  background: 'conic-gradient(from 180deg, transparent, rgba(147, 51, 234, 0.4), rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4), transparent)',
+                  animation: 'spin 1.5s linear infinite reverse',
+                  filter: 'blur(6px)'
                 }}
               />
-              
-              {/* Inner glow layer */}
               <div 
-                className="absolute inset-0 rounded-3xl"
+                className="absolute w-[105%] h-[105%] rounded-3xl opacity-50"
                 style={{
-                  background: 'radial-gradient(ellipse 105% 95% at 60% 40%, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.08), transparent 50%)',
-                  filter: 'blur(10px)',
-                  animation: 'siriPulse 2.5s ease-in-out infinite 1s'
+                  background: 'conic-gradient(from 90deg, transparent, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.3), rgba(59, 130, 246, 0.3), transparent)',
+                  animation: 'spin 1s linear infinite',
+                  filter: 'blur(4px)'
                 }}
               />
             </div>

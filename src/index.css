@@ -884,23 +884,3 @@ table th {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
-
-/* Siri-like pulsing animation */
-@keyframes siriPulse {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scale(1) rotate(0deg);
-  }
-  25% {
-    opacity: 0.6;
-    transform: scale(1.02) rotate(0.5deg);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(1.05) rotate(-0.3deg);
-  }
-  75% {
-    opacity: 0.7;
-    transform: scale(1.03) rotate(0.2deg);
-  }
-}
