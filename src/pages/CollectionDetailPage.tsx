@@ -50,6 +50,45 @@ export default function CollectionDetailPage() {
         block: 'center',
         inline: 'nearest'
       });
+      
+      // Add a custom slower scroll animation using CSS
+      const style = document.createElement('style');
+      style.textContent = `
+        html {
+          scroll-behavior: auto !important;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Use a custom smooth scroll with slower timing
+      const targetElement = emptyCardRef.current;
+      const targetPosition = targetElement.offsetTop - (window.innerHeight / 2) + (targetElement.offsetHeight / 2);
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      const duration = 1500; // 1.5 seconds for a slower animation
+      let start: number | null = null;
+      
+      function animation(currentTime: number) {
+        if (start === null) start = currentTime;
+        const timeElapsed = currentTime - start;
+        const run = ease(timeElapsed, startPosition, distance, duration);
+        window.scrollTo(0, run);
+        if (timeElapsed < duration) requestAnimationFrame(animation);
+        else {
+          // Restore original scroll behavior
+          document.head.removeChild(style);
+        }
+      }
+      
+      // Easing function for smooth animation
+      function ease(t: number, b: number, c: number, d: number) {
+        t /= d / 2;
+        if (t < 1) return c / 2 * t * t + b;
+        t--;
+        return -c / 2 * (t * (t - 2) - 1) + b;
+      }
+      
+      requestAnimationFrame(animation);
     }
   };
 
