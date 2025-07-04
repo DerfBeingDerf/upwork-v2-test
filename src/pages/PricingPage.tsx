@@ -197,10 +197,10 @@ export default function PricingPage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleGetStarted(plan.name)}
-                          className={`w-full py-4 text-lg font-medium transition-all duration-200 rounded-full ${
+                          className={`btn-apple-primary w-full text-lg ${
                             plan.name === 'Pro Lifetime' 
-                              ? 'text-white bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/25' 
-                              : 'btn-apple-primary'
+                              ? 'btn-purple-gradient' 
+                              : ''
                           }`}
                         >
                           {plan.cta}
