@@ -123,8 +123,6 @@ export default function EmbedPage() {
             </div>
           </main>
         </div>
-          </div>
-        </div>
       </div>
     );
   }
