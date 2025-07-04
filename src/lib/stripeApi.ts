@@ -99,7 +99,7 @@ export const getUserOrders = async (): Promise<StripeOrder[]> => {
 export const hasActiveSubscription = (subscription: StripeSubscription | null): boolean => {
   if (!subscription) return false;
   
-  const activeStatuses = ['trialing', 'active'];
+  const activeStatuses = ['trialing', 'active', 'past_due'];
   return activeStatuses.includes(subscription.subscription_status);
 };
 
@@ -117,7 +117,24 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
     hasLifetimeAccess()
   ]);
 
-  return hasLifetime || hasActiveSubscription(subscription);
+  // Check for lifetime access first
+  if (hasLifetime) return true;
+  
+  // Check for active subscription or trial
+  if (!subscription) return false;
+  
+  // Active statuses that allow embed access
+  const embedActiveStatuses = ['trialing', 'active'];
+  if (embedActiveStatuses.includes(subscription.subscription_status)) {
+    return true;
+  }
+  
+  // Check if canceled but still within current period
+  if (subscription.subscription_status === 'canceled' && subscription.current_period_end) {
+    return subscription.current_period_end > Math.floor(Date.now() / 1000);
+  }
+  
+  return false;
 };
 export const cancelSubscription = async (): Promise<void> => {
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();

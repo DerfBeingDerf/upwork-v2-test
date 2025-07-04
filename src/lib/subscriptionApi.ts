@@ -45,8 +45,18 @@ export const getEmbedAccessState = async (userId: string): Promise<EmbedAccessSt
         return 'trial_ended';
       case 'not_started':
         return 'no_trial';
+      case 'canceled':
+      case 'cancelled':
+        // Check if still within the current period
+        if (subscription.current_period_end && subscription.current_period_end > Math.floor(Date.now() / 1000)) {
+          return 'active';
+        }
+        return 'trial_ended';
+      case 'past_due':
+      case 'unpaid':
+        return 'trial_ended';
       default:
-        return 'trial_ended'; // For canceled, unpaid, etc.
+        return 'trial_ended';
     }
   } catch (error) {
     console.error('Error checking embed access state:', error);

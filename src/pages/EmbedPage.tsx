@@ -27,6 +27,10 @@ export default function EmbedPage() {
         setTracks(tracks);
         setEmbedAccessState(embedAccessState);
         
+        // Debug logging
+        console.log('Embed access state:', embedAccessState);
+        console.log('Collection:', collection);
+        
       } catch (err) {
         setError("This collection is not available.");
         console.error(err);
@@ -69,14 +73,14 @@ export default function EmbedPage() {
       switch (embedAccessState) {
         case 'trial_ended':
           return {
-            title: 'Trial Ended - Reactivate to Continue',
-            description: 'Your 7-day free trial has ended. To continue using embeddable audio players, please reactivate your subscription or upgrade to lifetime access.',
+            title: 'Subscription Required',
+            description: 'This embedded audio collection requires an active subscription. The owner needs to reactivate their subscription or upgrade to lifetime access to continue using embeddable players.',
             buttonText: 'Reactivate Subscription',
             buttonUrl: `${window.location.origin}/pricing`
           };
         case 'no_trial':
           return {
-            title: 'Start Your Free Trial',
+            title: 'Subscription Required',
             description: 'This embedded audio collection requires a subscription to display. The owner needs to start their free 7-day trial or upgrade to access embeddable players.',
             buttonText: 'Start Free Trial',
             buttonUrl: `${window.location.origin}/pricing`
@@ -84,7 +88,7 @@ export default function EmbedPage() {
         case 'error':
         default:
           return {
-            title: 'Collection Unavailable',
+            title: 'Temporarily Unavailable',
             description: 'This embedded audio collection is temporarily unavailable. Please try again later or contact the collection owner.',
             buttonText: 'Learn More',
             buttonUrl: `${window.location.origin}/pricing`

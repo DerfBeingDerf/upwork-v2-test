@@ -481,6 +481,10 @@ export const getPublicCollection = async (collectionId: string): Promise<{
 
   // Check the collection owner's embed access state
   const embedAccessState = await checkCollectionEmbedAccessState(collectionId);
+  
+  // Debug logging
+  console.log('Collection owner:', collection.user_id);
+  console.log('Embed access state for collection:', embedAccessState);
 
   // Then get the tracks
   const { data: tracks, error: tracksError } = await supabase
