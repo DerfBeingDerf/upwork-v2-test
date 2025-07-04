@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, CreditCard, Calendar, Crown, Zap, LogOut, ArrowLeft, ExternalLink, AlertTriangle, Receipt, X } from 'lucide-react';
+import { User, Mail, CreditCard, Calendar, Crown, Zap, LogOut, ArrowLeft, ExternalLink, AlertTriangle, Receipt, X, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { getUserSubscription, getUserOrders, hasLifetimeAccess, cancelSubscription, createCustomerPortalSession } from '../lib/stripeApi';
 import type { StripeSubscription } from '../lib/stripeApi';
 
 export default function ProfilePage() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [subscription, setSubscription] = useState<StripeSubscription | null>(null);
   const [hasLifetime, setHasLifetime] = useState(false);
@@ -233,7 +233,19 @@ export default function ProfilePage() {
             <div className="card-apple p-6">
               <h3 className="text-xl font-semibold text-white mb-4 text-apple-title">Current Plan</h3>
               
-              {hasLifetime ? (
+              {isAdmin ? (
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className="h-10 w-10 rounded-xl bg-blue-500/20 flex items-center justify-center mr-3 border border-blue-500/30">
+                      <Shield size={20} className="text-blue-500" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-white text-apple-title">Admin Access</h4>
+                      <p className="text-sm text-blue-400">Full platform access with all features</p>
+                    </div>
+                  </div>
+                </div>
+              ) : hasLifetime ? (
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
                     <div className="h-10 w-10 rounded-xl bg-purple-500/20 flex items-center justify-center mr-3 border border-purple-500/30">
@@ -319,7 +331,7 @@ export default function ProfilePage() {
               )}
 
               {/* Upgrade Button */}
-              {!hasLifetime && (!subscription || subscription.subscription_status === 'not_started' || subscription.subscription_status === 'paused') && (
+              {!isAdmin && !hasLifetime && (!subscription || subscription.subscription_status === 'not_started' || subscription.subscription_status === 'paused') && (
                 <button
                   onClick={() => navigate('/pricing')}
                   className="btn-apple-primary w-full mt-4"
@@ -330,7 +342,7 @@ export default function ProfilePage() {
               )}
 
               {/* Subscription Management */}
-              {subscription && subscription.subscription_id && (
+              {!isAdmin && subscription && subscription.subscription_id && (
                 <div className="mt-6 pt-6 border-t border-white/10">
                   <h4 className="text-lg font-semibold text-white mb-4 text-apple-title">Subscription Management</h4>
                   <div className="space-y-3">

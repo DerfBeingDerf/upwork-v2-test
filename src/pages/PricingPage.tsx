@@ -7,7 +7,7 @@ import { createCheckoutSession } from '../lib/stripeApi';
 import { stripeProducts } from '../stripe-config';
 
 export default function PricingPage() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
@@ -88,6 +88,12 @@ export default function PricingPage() {
   const handleGetStarted = async (plan: typeof plans[0]) => {
     if (!user) {
       navigate('/register');
+      return;
+    }
+
+    // Admins don't need to purchase anything
+    if (isAdmin) {
+      navigate('/upload');
       return;
     }
 
@@ -228,13 +234,19 @@ export default function PricingPage() {
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleGetStarted(plan)}
                           disabled={loadingPlan === plan.name}
-                          className={`btn-apple-primary w-full text-lg ${
+                          className={`w-full text-lg ${
+                            isAdmin 
+                              ? 'btn-apple-secondary cursor-not-allowed opacity-50' 
+                              : 'btn-apple-primary'
+                          } ${
                             plan.name === 'Pro Lifetime' 
                               ? 'btn-purple-gradient' 
                               : ''
                           } ${loadingPlan === plan.name ? 'opacity-75 cursor-not-allowed' : ''}`}
                         >
-                          {loadingPlan === plan.name ? (
+                          {isAdmin ? (
+                            'Admin - Already Active'
+                          ) : loadingPlan === plan.name ? (
                             <span className="flex items-center justify-center">
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                               Processing...
@@ -449,9 +461,18 @@ export default function PricingPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleGetStarted(plans[0])}
                 disabled={loadingPlan === 'Pro Monthly'}
-                className={`btn-apple-primary px-8 py-3 text-lg ${loadingPlan === 'Pro Monthly' ? 'opacity-75 cursor-not-allowed' : ''}`}
+                className={`px-8 py-3 text-lg ${
+                  isAdmin 
+                    ? 'btn-apple-secondary cursor-not-allowed opacity-50' 
+                    : 'btn-apple-primary'
+                } ${loadingPlan === 'Pro Monthly' ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
-                {loadingPlan === 'Pro Monthly' ? (
+                {isAdmin ? (
+                  <>
+                    <Shield className="mr-2 h-5 w-5" />
+                    Admin - Already Active
+                  </>
+                ) : loadingPlan === 'Pro Monthly' ? (
                   <span className="flex items-center justify-center">
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Processing...
@@ -470,9 +491,18 @@ export default function PricingPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleGetStarted(plans[1])}
                 disabled={loadingPlan === 'Pro Lifetime'}
-                className={`inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-white text-lg transition-all duration-200 bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/25 ${loadingPlan === 'Pro Lifetime' ? 'opacity-75 cursor-not-allowed' : ''}`}
+                className={`inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-white text-lg transition-all duration-200 ${
+                  isAdmin 
+                    ? 'bg-gray-600 cursor-not-allowed opacity-50' 
+                    : 'bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/25'
+                } ${loadingPlan === 'Pro Lifetime' ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
-                {loadingPlan === 'Pro Lifetime' ? (
+                {isAdmin ? (
+                  <>
+                    <Shield className="mr-2 h-5 w-5" />
+                    Admin - Already Active
+                  </>
+                ) : loadingPlan === 'Pro Lifetime' ? (
                   <span className="flex items-center justify-center">
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Processing...

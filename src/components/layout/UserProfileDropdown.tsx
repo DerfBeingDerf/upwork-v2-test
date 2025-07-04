@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Crown, Zap, CreditCard, Calendar, LogOut, Settings } from 'lucide-react';
+import { User, Crown, Zap, CreditCard, Calendar, LogOut, Settings, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { getUserSubscription, hasLifetimeAccess } from '../../lib/stripeApi';
@@ -12,7 +12,7 @@ type UserProfileDropdownProps = {
 };
 
 export default function UserProfileDropdown({ isOpen, onClose }: UserProfileDropdownProps) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [subscription, setSubscription] = useState<StripeSubscription | null>(null);
   const [hasLifetime, setHasLifetime] = useState(false);
@@ -146,6 +146,18 @@ export default function UserProfileDropdown({ isOpen, onClose }: UserProfileDrop
               <div className="animate-pulse">
                 <div className="h-4 bg-white/10 rounded w-2/3 mb-2"></div>
                 <div className="h-3 bg-white/5 rounded w-1/2"></div>
+              </div>
+            ) : isAdmin ? (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="h-8 w-8 rounded-lg bg-blue-500/20 flex items-center justify-center mr-3 border border-blue-500/30">
+                    <Shield size={16} className="text-blue-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white text-sm text-apple-caption">Admin Access</h4>
+                    <p className="text-xs text-blue-400">Full platform access</p>
+                  </div>
+                </div>
               </div>
             ) : hasLifetime ? (
               <div className="flex items-center justify-between">
