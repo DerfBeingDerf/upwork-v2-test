@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Music, Plus, ListMusic, Share2, MoreVertical, Settings, Globe, Lock } from 'lucide-react';
+import { Music, ListMusic, Share2, MoreVertical, Settings, Globe, Lock, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import WaveformPlayer from '../components/audio/WaveformPlayer';
 import CollectionEmbed from '../components/collection/CollectionEmbed';
@@ -9,10 +9,10 @@ import DeleteCollectionModal from '../components/collection/DeleteCollectionModa
 import TrackActionsModal from '../components/collection/TrackActionsModal';
 import CoverImageUploader from '../components/collection/CoverImageUploader';
 import LoadingSpinner from '../components/layout/LoadingSpinner';
-import { getCollection, getCollectionTracks, getUserAudioFiles, getUserCollections, addTrackToCollection, deleteCollection, removeTrackFromCollection, moveTrackToCollection, updateCollection, uploadCollectionCoverImage, removeCollectionCoverImage } from '../lib/api';
-import { formatDuration } from '../lib/audioUtils';
+import { getCollection, getCollectionTracks, getUserCollections, deleteCollection, removeTrackFromCollection, moveTrackToCollection, updateCollection, uploadCollectionCoverImage, removeCollectionCoverImage, uploadAudioFile, addTrackToCollection } from '../lib/api';
+import { formatDuration, getAudioMetadata } from '../lib/audioUtils';
 import { Collection, CollectionTrack, AudioFile } from '../types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export default function CollectionDetailPage() {
   const { collectionId } = useParams<{ collectionId: string }>();
@@ -27,11 +27,11 @@ export default function CollectionDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
-  const [showAddTrack, setShowAddTrack] = useState(false);
-  const [availableAudios, setAvailableAudios] = useState<AudioFile[]>([]);
-  const [selectedAudioId, setSelectedAudioId] = useState<string>('');
-  const [isAdding, setIsAdding] = useState(false);
-  const [addError, setAddError] = useState<string | null>(null);
+  // Drag and drop state
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
+  const [uploadError, setUploadError] = useState<string | null>(null);
   
   // Delete modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -92,6 +92,48 @@ export default function CollectionDetailPage() {
     }
   };
 
+  // Handle file uploads for empty collection
+  const handleFileUpload = async (files: File[]) => {
+    if (!user || !collectionId) return;
+
+    const audioFiles = files.filter(file => file.type.startsWith('audio/'));
+    if (audioFiles.length === 0) {
+      setUploadError('Please select audio files only.');
+      return;
+    }
+
+    if (audioFiles.length !== files.length) {
+      setUploadError('Some files were skipped. Please select only audio files.');
+    } else {
+      setUploadError(null);
+    }
+
+    setIsUploading(true);
+    setUploadProgress('');
+
+    try {
+      for (let i = 0; i < audioFiles.length; i++) {
+        const file = audioFiles[i];
+        setUploadProgress(`Uploading ${file.name} (${i + 1}/${audioFiles.length})...`);
+        
+        // Extract title from filename
+        const title = file.name.split('.').slice(0, -1).join('.');
+        
+        const audioFile = await uploadAudioFile(file, title, user.id);
+        await addTrackToCollection(collectionId, audioFile.id, tracks.length + i);
+      }
+      
+      setUploadProgress('Finalizing...');
+      await fetchCollectionData(); // Refresh the collection data
+      
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Failed to upload files.');
+    } finally {
+      setIsUploading(false);
+      setUploadProgress('');
+    }
+  };
+
   const fetchCollectionData = async () => {
     if (!collectionId) return;
 
@@ -124,46 +166,6 @@ export default function CollectionDetailPage() {
   useEffect(() => {
     fetchCollectionData();
   }, [collectionId, user]);
-
-  const fetchAvailableAudios = async () => {
-    if (!user) return;
-
-    try {
-      const audios = await getUserAudioFiles(user.id);
-      setAvailableAudios(audios);
-    } catch (err) {
-      console.error('Failed to load available audio files:', err);
-    }
-  };
-
-  useEffect(() => {
-    if (showAddTrack) {
-      fetchAvailableAudios();
-    }
-  }, [showAddTrack, user]);
-
-  const handleAddTrack = async () => {
-    if (!collectionId || !selectedAudioId) return;
-
-    if (tracks.some(track => track.audio_id === selectedAudioId)) {
-      setAddError('This track is already in the collection.');
-      return;
-    }
-
-    try {
-      setIsAdding(true);
-      setAddError(null);
-      await addTrackToCollection(collectionId, selectedAudioId, tracks.length);
-      await fetchCollectionData();
-      setShowAddTrack(false);
-      setSelectedAudioId('');
-    } catch (err) {
-      setAddError('Failed to add track to collection.');
-      console.error(err);
-    } finally {
-      setIsAdding(false);
-    }
-  };
 
   const handleDeleteCollection = async () => {
     if (!collectionId) return;
@@ -319,124 +321,22 @@ export default function CollectionDetailPage() {
 
           {/* Actions */}
           <div className="lg:col-span-1 flex justify-end">
-            {isOwner && (
-              tracks.length === 0 ? (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={scrollToEmptyCard}
-                  className="btn-apple-primary whitespace-nowrap w-full lg:w-auto"
-                >
-                  <span className="flex items-center justify-center">
-                    <Plus size={20} className="mr-2" />
-                    Add Tracks
-                  </span>
-                </motion.button>
-              ) : (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowAddTrack(!showAddTrack)}
-                  className="btn-apple-primary whitespace-nowrap w-full lg:w-auto"
-                >
-                  {showAddTrack ? (
-                    "Cancel"
-                  ) : (
-                    <span className="flex items-center justify-center">
-                      <Plus size={20} className="mr-2" />
-                      Add Tracks
-                    </span>
-                  )}
-                </motion.button>
-              )
+            {isOwner && tracks.length === 0 && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={scrollToEmptyCard}
+                className="btn-apple-primary whitespace-nowrap w-full lg:w-auto"
+              >
+                <span className="flex items-center justify-center">
+                  <Upload size={20} className="mr-2" />
+                  Upload Tracks
+                </span>
+              </motion.button>
             )}
           </div>
         </div>
       </div>
-
-      {/* Add Track Section */}
-      <AnimatePresence>
-        {showAddTrack && isOwner && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="card-apple p-6 mb-8"
-          >
-            <h2 className="text-xl font-semibold mb-6 text-white text-apple-title">Add Track to Collection</h2>
-
-            {addError && (
-              <div className="status-apple-error p-4 rounded-2xl mb-6 text-sm">
-                {addError}
-              </div>
-            )}
-
-            {availableAudios.length === 0 ? (
-              <div className="text-gray-400 mb-6">
-                <p className="mb-3 text-apple-body">You don't have any audio files to add.</p>
-                {user && (
-                  <p className="text-apple-body">
-                    <a href="/upload" className="text-blue-500 hover:text-blue-400 font-medium transition-colors">
-                      Upload new audio files
-                    </a> to add them to this collection.
-                  </p>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="audioSelect" className="block text-sm font-medium text-gray-300 mb-2">
-                    Select Audio File
-                  </label>
-                  <select
-                    id="audioSelect"
-                    value={selectedAudioId}
-                    onChange={(e) => {
-                      setSelectedAudioId(e.target.value);
-                      setAddError(null);
-                    }}
-                    className="input-apple w-full"
-                  >
-                    <option value="">-- Select an audio file --</option>
-                    {availableAudios.map((audio) => (
-                      <option key={audio.id} value={audio.id}>
-                        {audio.title} {audio.artist ? `- ${audio.artist}` : ''} ({formatDuration(audio.duration)})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:justify-end gap-4">
-                  <button
-                    onClick={() => {
-                       setShowAddTrack(false);
-                       setAddError(null);
-                       setSelectedAudioId('');
-                    }}
-                    className="btn-apple-secondary w-full sm:w-auto"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleAddTrack}
-                    disabled={!selectedAudioId || isAdding}
-                    className={`btn-apple-primary ${(!selectedAudioId || isAdding) ? 'opacity-50 cursor-not-allowed' : ''} w-full sm:w-auto`}
-                  >
-                    {isAdding ? (
-                      <span className="flex items-center justify-center">
-                        <div className="spinner-apple mr-2" />
-                        Adding...
-                      </span>
-                    ) : (
-                      "Add to Collection"
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Tracks and Player/Embed Layout */}
       {tracks.length === 0 ? (
@@ -446,83 +346,123 @@ export default function CollectionDetailPage() {
              onDragOver={(e) => {
                e.preventDefault();
                e.stopPropagation();
-               if (isOwner) {
-                 const card = e.currentTarget.querySelector('.drag-drop-card');
-                 if (card) {
-                   card.classList.add('border-blue-500');
-                   card.classList.add('bg-blue-500/10');
-                 }
+               if (isOwner && !isUploading) {
+                 setIsDragging(true);
                }
              }}
              onDragLeave={(e) => {
                e.preventDefault();
                e.stopPropagation();
-               if (isOwner) {
-                 const card = e.currentTarget.querySelector('.drag-drop-card');
-                 if (card) {
-                   card.classList.remove('border-blue-500');
-                   card.classList.remove('bg-blue-500/10');
-                 }
+               if (isOwner && !isUploading) {
+                 setIsDragging(false);
                }
              }}
              onDrop={(e) => {
                e.preventDefault();
                e.stopPropagation();
-               if (isOwner) {
-                 const card = e.currentTarget.querySelector('.drag-drop-card');
-                 if (card) {
-                   card.classList.remove('border-blue-500');
-                   card.classList.remove('bg-blue-500/10');
-                 }
-               }
+               setIsDragging(false);
                
-               if (!isOwner) return;
+               if (!isOwner || isUploading) return;
                
                const files = Array.from(e.dataTransfer.files);
-               const audioFiles = files.filter(file => file.type.startsWith('audio/'));
-               
-               if (audioFiles.length > 0) {
-                 // Navigate to upload page with the dropped files
-                 // For now, just show the add track interface
-                 setShowAddTrack(true);
+               if (files.length > 0) {
+                 handleFileUpload(files);
                }
              }}>
-          <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 drag-drop-card ${
-            isOwner ? 'cursor-pointer border-2 border-dashed border-white/30 hover:border-blue-500/50' : ''
+          <div className={`card-apple p-16 text-center max-w-2xl w-full transition-all duration-300 ${
+            isOwner ? `cursor-pointer border-2 border-dashed ${
+              isDragging 
+                ? 'border-blue-500 bg-blue-500/10' 
+                : 'border-white/30 hover:border-blue-500/50'
+            }` : ''
           }`}
                onClick={(e) => {
                  e.stopPropagation();
-                 if (isOwner) {
-                   // Only show add track interface on click, not on drag
-                   setShowAddTrack(true);
+                 if (isOwner && !isUploading) {
+                   // Trigger file input
+                   const input = document.createElement('input');
+                   input.type = 'file';
+                   input.multiple = true;
+                   input.accept = 'audio/*';
+                   input.onchange = (e) => {
+                     const files = Array.from((e.target as HTMLInputElement).files || []);
+                     if (files.length > 0) {
+                       handleFileUpload(files);
+                     }
+                   };
+                   input.click();
                  }
                }}>
-            <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
-              <Music size={48} className="text-gray-600" />
-            </div>
-            <h3 className="text-3xl font-semibold mb-6 text-white text-apple-title">No tracks yet</h3>
-            <p className="text-gray-400 text-apple-body text-lg leading-relaxed">
-              {isOwner ? (
-                <>
-                  Drag and drop audio files here or click to add tracks to your collection.
-                  <br />
-                  <span className="text-sm text-gray-500 mt-2 block">
-                    Supports MP3, WAV, FLAC, OGG and more
-                  </span>
-                </>
-              ) : (
-                "This collection is empty."
-              )}
-            </p>
+            
+            {/* Upload Progress */}
+            {isUploading ? (
+              <div className="py-8">
+                <div className="spinner-apple mx-auto mb-4" style={{ width: '48px', height: '48px', borderWidth: '4px' }} />
+                <h3 className="text-2xl font-semibold mb-4 text-white text-apple-title">Uploading...</h3>
+                {uploadProgress && (
+                  <p className="text-blue-400 text-apple-body">{uploadProgress}</p>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
+                  <Music size={48} className={isDragging ? "text-blue-500" : "text-gray-600"} />
+                </div>
+                <h3 className="text-3xl font-semibold mb-6 text-white text-apple-title">No tracks yet</h3>
+                <p className="text-gray-400 text-apple-body text-lg leading-relaxed">
+                  {isOwner ? (
+                    <>
+                      Drag and drop audio files here or click to add tracks to your collection.
+                      <br />
+                      <span className="text-sm text-gray-500 mt-2 block">
+                        Supports MP3, WAV, FLAC, OGG and more
+                      </span>
+                    </>
+                  ) : (
+                    "This collection is empty."
+                  )}
+                </p>
+              </>
+            )}
+            
+            {/* Upload Error */}
+            {uploadError && (
+              <div className="mt-6 status-apple-error p-4 rounded-2xl text-sm">
+                {uploadError}
+              </div>
+            )}
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-2">
             <div className="card-apple-subtle overflow-hidden">
-              <div className="p-6 bg-white/5 border-b border-white/10">
+              <div className="p-6 bg-white/5 border-b border-white/10 flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-white text-apple-title">Tracks</h2>
-              </div>
+                {isOwner && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.multiple = true;
+                      input.accept = 'audio/*';
+                      input.onchange = (e) => {
+                        const files = Array.from((e.target as HTMLInputElement).files || []);
+                        if (files.length > 0) {
+                          handleFileUpload(files);
+                        }
+                      };
+                      input.click();
+                    }}
+                    className="btn-apple-primary text-sm px-4 py-2"
+                  >
+                    <Upload size={16} className="mr-2" />
+                    Add More
+                  </motion.button>
+                )}
+            </div>
 
               {/* Fully Responsive Track List */}
               <div className="w-full">
@@ -739,6 +679,19 @@ export default function CollectionDetailPage() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Progress Overlay for existing tracks */}
+      {isUploading && tracks.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="modal-apple p-8 text-center">
+            <div className="spinner-apple mx-auto mb-4" style={{ width: '48px', height: '48px', borderWidth: '4px' }} />
+            <h3 className="text-xl font-semibold text-white mb-2 text-apple-title">Uploading Tracks</h3>
+            {uploadProgress && (
+              <p className="text-blue-400 text-apple-body">{uploadProgress}</p>
+            )}
           </div>
         </div>
       )}
