@@ -193,7 +193,7 @@ Deno.serve(async (req) => {
         subscription_data: {
           trial_period_days: 7,
           // Don't require payment method during trial
-          payment_behavior: 'default_incomplete',
+          payment_behavior: 'allow_incomplete',
         },
       }),
       success_url,
