@@ -27,14 +27,9 @@ export default function EmbedPage() {
         setTracks(tracks);
         setEmbedAccessState(embedAccessState);
         
-        // Debug logging
-        console.log('Embed access state:', embedAccessState);
-        console.log('Collection:', collection);
-        console.log('Tracks loaded:', tracks.length);
-        
       } catch (err) {
-        console.error('Error loading collection:', err);
         setError("This collection is not available.");
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -70,20 +65,18 @@ export default function EmbedPage() {
 
   // Show appropriate message based on embed access state
   if (embedAccessState !== 'active') {
-    console.log('Embed access denied, state:', embedAccessState);
-    
     const getErrorContent = () => {
       switch (embedAccessState) {
         case 'trial_ended':
           return {
-            title: 'Subscription Required',
-            description: 'This embedded audio collection requires an active subscription. The owner needs to reactivate their subscription or upgrade to lifetime access to continue using embeddable players.',
+            title: 'Trial Ended - Reactivate to Continue',
+            description: 'Your 7-day free trial has ended. To continue using embeddable audio players, please reactivate your subscription or upgrade to lifetime access.',
             buttonText: 'Reactivate Subscription',
             buttonUrl: `${window.location.origin}/pricing`
           };
         case 'no_trial':
           return {
-            title: 'Subscription Required',
+            title: 'Start Your Free Trial',
             description: 'This embedded audio collection requires a subscription to display. The owner needs to start their free 7-day trial or upgrade to access embeddable players.',
             buttonText: 'Start Free Trial',
             buttonUrl: `${window.location.origin}/pricing`
@@ -91,7 +84,7 @@ export default function EmbedPage() {
         case 'error':
         default:
           return {
-            title: 'Temporarily Unavailable',
+            title: 'Collection Unavailable',
             description: 'This embedded audio collection is temporarily unavailable. Please try again later or contact the collection owner.',
             buttonText: 'Learn More',
             buttonUrl: `${window.location.origin}/pricing`
@@ -104,27 +97,27 @@ export default function EmbedPage() {
     return (
       <div className="w-screen h-screen sfpro flex justify-center items-center bg-[#FEFEFE] sm:bg-[#f2f2f2]">
         <div className="transform scale-[0.4] 2xs:scale-[0.53] xs:scale-[0.6] sm:scale-[0.7] md:scale-[0.85] lg:scale-[1]">
-          <main className="w-[750px] h-[550px] sm:h-[500px] flex items-center justify-center px-8 py-12 sm:shadow-lg rounded-lg bg-[#FEFEFE]">
-            <div className="text-center w-full h-full flex flex-col justify-center items-center px-8">
-              <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                <CreditCard size={48} className="text-orange-600" />
+          <main className="w-[750px] h-[550px] sm:h-[500px] flex items-center justify-center px-8 py-12 sm:shadow-lg rounded-lg bg-[#FEFEFE] overflow-hidden">
+            <div className="text-center max-w-md mx-auto">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CreditCard size={32} className="text-orange-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-800 mb-6 leading-tight">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">
                 {errorContent.title}
               </h3>
-              <p className="text-lg text-gray-600 mb-10 leading-relaxed max-w-lg">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 {errorContent.description}
               </p>
               <a
                 href={errorContent.buttonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold text-lg rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                <ExternalLink size={22} className="mr-3" />
+                <ExternalLink size={18} className="mr-2" />
                 {errorContent.buttonText}
               </a>
-              <p className="text-sm text-gray-500 mt-8">
+              <p className="text-xs text-gray-500 mt-4">
                 Powered by ACE Audio Platform
               </p>
             </div>
@@ -134,7 +127,6 @@ export default function EmbedPage() {
     );
   }
 
-  console.log('Rendering embed player with', tracks.length, 'tracks');
 
   return (
     <div className="w-screen h-screen sfpro flex justify-center items-center bg-[#FEFEFE] sm:bg-[#f2f2f2]">
