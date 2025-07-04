@@ -13,6 +13,7 @@ import CollectionDetailPage from "./pages/CollectionDetailPage";
 import EmbedPage from "./pages/EmbedPage";
 import PricingPage from "./pages/PricingPage";
 import SuccessPage from "./pages/SuccessPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   // const { user, loading } = useAuth();
@@ -46,6 +47,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/success" element={<SuccessPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
           {/* Public routes */}
           <Route path="/upload" element={<UploadPage />} />

@@ -119,3 +119,49 @@ export const hasEmbedAccess = async (): Promise<boolean> => {
 
   return hasLifetime || hasActiveSubscription(subscription);
 };
+export const cancelSubscription = async (): Promise<void> => {
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  
+  if (sessionError || !session?.access_token) {
+    throw new Error('User not authenticated');
+  }
+
+  const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-cancel-subscription`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to cancel subscription');
+  }
+};
+
+export const createCustomerPortalSession = async (): Promise<{ url: string }> => {
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  
+  if (sessionError || !session?.access_token) {
+    throw new Error('User not authenticated');
+  }
+
+  const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-customer-portal`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({
+      return_url: `${window.location.origin}/profile`
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to create customer portal session');
+  }
+
+  return await response.json();
+};
