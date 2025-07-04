@@ -95,30 +95,34 @@ export default function EmbedPage() {
     const errorContent = getErrorContent();
 
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center max-w-md mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CreditCard size={32} className="text-orange-600" />
+      <div className="w-screen h-screen sfpro flex justify-center items-center bg-[#FEFEFE] sm:bg-[#f2f2f2]">
+        <div className="transform scale-[0.4] 2xs:scale-[0.53] xs:scale-[0.6] sm:scale-[0.7] md:scale-[0.85] lg:scale-[1]">
+          <main className="w-[750px] h-[550px] sm:h-[500px] flex items-center justify-center px-8 py-12 sm:shadow-lg rounded-lg bg-[#FEFEFE] overflow-hidden">
+            <div className="text-center max-w-md mx-auto">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CreditCard size={32} className="text-orange-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">
+                {errorContent.title}
+              </h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                {errorContent.description}
+              </p>
+              <a
+                href={errorContent.buttonUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                <ExternalLink size={18} className="mr-2" />
+                {errorContent.buttonText}
+              </a>
+              <p className="text-xs text-gray-500 mt-4">
+                Powered by ACE Audio Platform
+              </p>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              {errorContent.title}
-            </h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              {errorContent.description}
-            </p>
-            <a
-              href={errorContent.buttonUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              <ExternalLink size={18} className="mr-2" />
-              {errorContent.buttonText}
-            </a>
-            <p className="text-xs text-gray-500 mt-4">
-              Powered by ACE Audio Platform
-            </p>
+          </main>
+        </div>
           </div>
         </div>
       </div>
