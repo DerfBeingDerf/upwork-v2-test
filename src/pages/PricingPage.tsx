@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Zap, Crown, Sparkles, ArrowRight, Music, Upload, Globe, Calendar, Loader2 } from 'lucide-react';
+import { Check, Zap, Crown, Sparkles, ArrowRight, Music, Upload, Globe, Calendar, Loader2, AlertCircle } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { createCheckoutSession } from '../lib/stripeApi';
@@ -11,6 +11,7 @@ export default function PricingPage() {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
@@ -93,11 +94,13 @@ export default function PricingPage() {
 
     if (!plan.stripeProduct) {
       console.error('Stripe product not found for plan:', plan.name);
+      setError('Product configuration error. Please try again later.');
       return;
     }
 
     try {
       setLoadingPlan(plan.name);
+      setError(null);
 
       const successUrl = `${window.location.origin}/success`;
       const cancelUrl = `${window.location.origin}/pricing`;
@@ -111,10 +114,12 @@ export default function PricingPage() {
 
       if (url) {
         window.location.href = url;
+      } else {
+        throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      // You could show an error toast here
+      setError(error instanceof Error ? error.message : 'Failed to start checkout process. Please try again.');
     } finally {
       setLoadingPlan(null);
     }
@@ -146,6 +151,22 @@ export default function PricingPage() {
             </motion.div>
           </div>
         </div>
+        
+        {/* Error Message */}
+        {error && (
+          <div className="w-full max-w-none px-8 sm:px-12 lg:px-16 mb-8">
+            <div className="max-w-4xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="status-apple-error p-4 rounded-2xl text-sm flex items-center"
+              >
+                <AlertCircle size={16} className="mr-2 flex-shrink-0" />
+                {error}
+              </motion.div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Pricing Cards */}
