@@ -104,11 +104,16 @@ export const hasActiveSubscription = (subscription: StripeSubscription | null): 
 };
 
 export const hasLifetimeAccess = async (): Promise<boolean> => {
-  const orders = await getUserOrders();
-  return orders.some(order => 
-    order.payment_status === 'paid' && 
-    order.order_status === 'completed'
-  );
+  try {
+    const orders = await getUserOrders();
+    return orders.some(order => 
+      order.payment_status === 'paid' && 
+      order.order_status === 'completed'
+    );
+  } catch (error) {
+    console.error('Error checking lifetime access:', error);
+    return false;
+  }
 };
 
 export const hasEmbedAccess = async (): Promise<boolean> => {
